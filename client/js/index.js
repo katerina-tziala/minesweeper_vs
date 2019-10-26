@@ -1,15 +1,10 @@
 "use strict";
 let uiManager, connectionManager;
 document.addEventListener("DOMContentLoaded", (event) => {
-    console.log("hi");
     self.uiManager = new InterfaceManager();
     self.uiManager.hideLoader();
-   
-    
     self.connectionManager = new ConectionManager();
-    
 });
-
 
 function getUserName(event) {
     event.preventDefault();

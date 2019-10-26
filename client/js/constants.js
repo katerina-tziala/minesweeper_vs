@@ -8,6 +8,7 @@ class Constants {
         userNameInput: "minesweeper_vs__user-name",
         gameContainer: "minesweeper_vs__game-container",
         popUpContainer: "minesweeper_vs__popup-container",
+        popUpMessageContainer: "minesweeper_vs__pop-up-message",
         loader: "loader",
         lobby: "minesweeper_vs__lobby-container",
     };
@@ -26,10 +27,21 @@ class Constants {
         playersList: "players-list",
         buttonBase: "minesweeper_vs__btn",
         buttonText: "minesweeper_vs__text-btn",
-        fontAwesome_ninja: "fas fa-user-ninja",
+        buttonIcon: "minesweeper_vs__icon-btn",
         selfModifier: "--self",
+        visiblePopUp: "minesweeper_vs__popup--visible",
+        invitationHeader: "invitation-header",
+        formHeader: "form-header",
+        radioContainer: "radio-container",
+        checkmark: "checkmark",
+        sendInvitationBtn: "send-invitation-btn",
+        cancelInvitationBtn: "cancel-invitation-btn",
+        receivedInvitationBtn: "received-invitation-btn",
+        waitingMesage: "waiting-message",
+        blinkDot: "blink-dot",
+        fontAwesome_ninja: "fas fa-user-ninja",
+        fontAwesome_times: "fas fa-times",
     };
-
 
     static connectionLink = "ws://localhost:9000";
 
@@ -37,8 +49,29 @@ class Constants {
     static requestTypes = {
         initializeSession: "initialize-session",
         sessionBroadcast: "session-broadcast",
-        updateClient: "update-client"
+        updateClient: "update-client",
+        sendInvitation: "send-invitation",
+        invitationReceivedByUser:"invitation-received-by-user",
+        receivedInvitation: "received-invitation",
     };
 
     static defaultSessionId = "minesweeper_vs";
+
+
+    static gameLevels = ["begginer", "intermediate", "expert"];
+
+    static gameParameters = {
+        begginer: {
+            "dimensions": { x: 9, y: 9 },
+            "numberOfMines": 10
+        },
+        intermediate: {
+            "dimensions": { x: 16, y: 16 },
+            "numberOfMines": 40,
+        },
+        expert: {
+            "dimensions": { x: 16, y: 30 },
+            "numberOfMines": 99
+        },  
+    }
 }

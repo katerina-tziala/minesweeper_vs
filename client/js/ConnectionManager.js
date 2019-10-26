@@ -30,6 +30,12 @@ class ConectionManager {
             case Constants.requestTypes.sessionBroadcast:
                 this.updateConnection(data);
                 break;
+            case Constants.requestTypes.receivedInvitation:
+                this.invitationReceived(data);
+                break;
+            case Constants.requestTypes.invitationReceivedByUser:
+                this.updateCurrentClientSession(data);
+                break;
         }
     }
 
@@ -47,6 +53,9 @@ class ConectionManager {
             self.uiManager.setLobbyView();
             self.uiManager.renderLobbyClients();
         }
+        if (!this.peers.length) {
+            self.uiManager.hidePopUp();
+        }
     }
 
     updateClientName(clientName) {
@@ -58,4 +67,12 @@ class ConectionManager {
         });
     }
 
+    updateCurrentClientSession(data) {
+        this.client.setSessionId(data.sessionId);
+    }
+
+    invitationReceived(data) {
+        this.receivedInvitation = data;
+        self.uiManager.displayReceivedInvitation(data.initiator.name, data.gameLevel)
+    }
 }

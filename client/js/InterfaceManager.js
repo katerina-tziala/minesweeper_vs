@@ -6,22 +6,13 @@ class InterfaceManager {
     }
 
     getViewElements() {
-        this.domElements = {
-            minesweeperVS: document.getElementById(Constants.dom_elements_ids.minesweeperVS),
-            banner: document.getElementById(Constants.dom_elements_ids.banner),
-            userForm: document.getElementById(Constants.dom_elements_ids.userForm),
-            userNameInput: document.getElementById(Constants.dom_elements_ids.userNameInput),
-            gameContainer: document.getElementById(Constants.dom_elements_ids.gameContainer),
-            popUpContainer: document.getElementById(Constants.dom_elements_ids.popUpContainer),
-            loader: document.getElementById(Constants.dom_elements_ids.loader),
-            lobby: document.getElementById(Constants.dom_elements_ids.lobby),
-
-
-        };
+        this.domElements = {};
+        Object.keys(Constants.dom_elements_ids).forEach(key => {
+            this.domElements[key] = document.getElementById(Constants.dom_elements_ids[key]);
+        });
         console.log(this.domElements);
         this.preventFormSubmissionOnEnter(this.domElements.userForm);
     }
-
 
     hideElement(element) {
         element.classList.add(Constants.classList.hidden);
@@ -52,7 +43,6 @@ class InterfaceManager {
         this.hideElement(this.domElements.userForm);
         this.displayElement(this.domElements.lobby);
         this.hideElement(this.domElements.gameContainer);
-        this.hideElement(this.domElements.popUpContainer);
         this.domElements.banner.classList.add(Constants.classList.topBanner);
         this.domElements.minesweeperVS.classList.remove(Constants.classList.wrapColumn);
         this.domElements.minesweeperVS.classList.add(Constants.classList.noWrapColumnStart, Constants.classList.mainContentDisplay);
@@ -77,7 +67,6 @@ class InterfaceManager {
         }
         this.domElements.lobby.append(playerList);
     }
-
 
     createClientCard(client, isThisPlayer = false) {
         const userCard = document.createElement("div");
@@ -121,8 +110,143 @@ class InterfaceManager {
         return button;
     }
 
-    invitePlayer() {
-        console.log("invitePlayer");
-
+    showInvitationForm() {
+        this.displayPopUp();
+        this.createInvitation();
     }
+
+    displayPopUp() {
+        this.domElements.popUpMessageContainer.innerHTML = "";
+        this.domElements.popUpContainer.classList.add(Constants.classList.visiblePopUp);
+    }
+
+    hidePopUp() {
+        this.domElements.popUpContainer.classList.remove(Constants.classList.visiblePopUp);
+    }
+
+    createInvitation() {
+        const invitationHeader = document.createElement("h2");
+        invitationHeader.classList.add(Constants.classList.invitationHeader);
+        invitationHeader.innerHTML = `invite player`;
+        const form = document.createElement("form");
+        const formHeader = document.createElement("p");
+        formHeader.classList.add(Constants.classList.formHeader);
+        formHeader.innerHTML = "Select game level:";
+        form.append(formHeader);
+        for (let index = 0; index < Constants.gameLevels.length; index++) {
+            const level = Constants.gameLevels[index];
+            const checked = (index === 0) ? true : false;
+            const label = this.createFormRadioButton(level, checked);
+            form.append(label);
+        }
+        const sendBtn = this.createButton(this.sendInvitation)
+        sendBtn.classList.add(Constants.classList.buttonText, Constants.classList.sendInvitationBtn);
+        sendBtn.innerHTML = "send";
+        const cancelBtn = this.createButton(this.cancelInvitation);
+        const iconclasses = Constants.classList.fontAwesome_times.split(" ");
+        cancelBtn.classList.add(Constants.classList.buttonIcon, Constants.classList.cancelInvitationBtn, iconclasses[0], iconclasses[1]);
+        this.domElements.popUpMessageContainer.append(invitationHeader, form, sendBtn, cancelBtn);
+    }
+
+    createFormRadioButton(level, checked) {
+        const label = document.createElement("label");
+        label.classList.add(Constants.classList.radioContainer);
+        const labelTag = document.createElement("span");
+        labelTag.innerHTML = level;
+        const radioBtn = document.createElement("input");
+        radioBtn.value = level;
+        radioBtn.name = "game_level";
+        radioBtn.type = "radio";
+        radioBtn.checked = checked;
+        const checkmark = document.createElement("span");
+        checkmark.classList.add(Constants.classList.checkmark);
+        label.append(labelTag, radioBtn, checkmark);
+        return label;
+    }
+
+    getMineList(boardParameters) {
+        let mineList = [];
+        while (mineList.length < boardParameters.numberOfMines) {
+            const minePosition = parseInt(Math.floor((Math.random() * (boardParameters.dimensions.x * boardParameters.dimensions.y))));
+            if (!mineList.includes(minePosition)) {
+                mineList.push(minePosition);
+            }
+        }
+        mineList = mineList.sort();
+        return mineList;
+    }
+
+    displayWaitingMessage() {
+        const opponent = self.connectionManager.peers.find(peer => peer.id === self.playerToInviteID);
+        this.displayPopUp();
+        const message = document.createElement("p");
+        message.innerHTML = `Waiting for <b><i>"${opponent.name}"</i></b> to join the game`;
+        message.classList.add(Constants.classList.waitingMesage);
+        this.domElements.popUpMessageContainer.append(message);
+        for (let index = 0; index < 3; index++) {
+            const dot = document.createElement("div");
+            dot.classList.add(Constants.classList.blinkDot);
+            dot.innerHTML = ".";
+            this.domElements.popUpMessageContainer.append(dot);
+        }
+    }
+    
+    displayReceivedInvitation(initiator, gameLevel) {
+        this.displayPopUp();
+        const message = document.createElement("p");
+        message.innerHTML = `${initiator} invited you for a minesweeper game (${gameLevel} level)`;
+        const acceptBtn = this.createButton(this.acceptInvitation);
+        acceptBtn.classList.add(Constants.classList.buttonText, Constants.classList.receivedInvitationBtn);
+        acceptBtn.innerHTML = "accept";
+        const declineBtn = this.createButton(this.declineInvitation);
+        declineBtn.classList.add(Constants.classList.buttonText, Constants.classList.receivedInvitationBtn);
+        declineBtn.innerHTML = "decline";
+        this.domElements.popUpMessageContainer.append(message, acceptBtn, declineBtn);
+    }
+
+
+
+
+
+    invitePlayer() {
+        self.playerToInviteID = this.getAttribute("id")
+        self.uiManager.showInvitationForm();
+    }
+
+    sendInvitation() {
+        const gameLevel = document.querySelector("input[name='game_level']:checked").value;
+        const boardParameters = Constants.gameParameters[gameLevel];
+        const mineList = self.uiManager.getMineList(boardParameters);
+        const gameParameters = {
+            level: gameLevel,
+            boardParameters: boardParameters,
+            mineList: mineList
+        };
+        self.uiManager.displayWaitingMessage();
+        self.connectionManager.send({
+            requestType: Constants.requestTypes.sendInvitation,
+            clientId: self.connectionManager.client.id,
+            opponentId: self.playerToInviteID,
+            game: gameParameters,
+            sessionId: self.connectionManager.client.sessionId,
+        });
+        self.playerToInviteID = null;
+    }
+
+    cancelInvitation() {
+        self.uiManager.hidePopUp();
+        self.playerToInviteID = null;
+    }
+
+    acceptInvitation() {
+       console.log("acceptInvitation");
+       
+    }
+
+    declineInvitation() {
+        console.log("declineInvitation");
+        
+     }
+
+    
 }

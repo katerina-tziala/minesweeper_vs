@@ -17,10 +17,6 @@ body {
     align-items: center;
 }
 
-.no-user-select {
-    user-select: none;
-}
-
 .wrap-column {
     flex-wrap: wrap;
     flex-direction: column;

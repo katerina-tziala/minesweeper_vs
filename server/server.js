@@ -8,6 +8,9 @@ const requestTypes = {
     initializeSession: "initialize-session",
     sessionBroadcast: "session-broadcast",
     updateClient: "update-client",
+    sendInvitation: "send-invitation",
+    invitationReceivedByUser:"invitation-received-by-user",
+    receivedInvitation: "received-invitation",
 };
 
 
@@ -46,10 +49,6 @@ function getSessionClients(session) {
     return [...session.clients];
 }
 
-
-
-
-
 function initializeSession(data, client) {
     const session = getSession(data.sessionId) || createSession(data.sessionId);
     session.joinSession(client);
@@ -57,14 +56,11 @@ function initializeSession(data, client) {
 }
 
 function updateClient(data) {
-    console.log(data);
-
     const session = getSession(data.sessionId);
     const clients = getSessionClients(session);
     clients.find(client => client.id === data.clientId).setName(data.name);
     broadcastSession(session);
 }
-
 
 function broadcastSession(session) {
     const clients = getSessionClients(session);
@@ -78,6 +74,43 @@ function broadcastSession(session) {
     });
 }
 
+function sendInvitation(data) {
+    const currentSession = getSession(data.sessionId);
+    const clients = getSessionClients(currentSession);
+    const currClient = clients.find(client => client.id === data.clientId);
+    const opponent = clients.find(client => client.id === data.opponentId);
+    leaveSession(currentSession, currClient);
+    broadcastSession(currentSession);
+    const newSession = createSession();
+    newSession.joinSession(currClient);
+    currClient.setNewSession(newSession);
+    currClient.send({
+        requestType: requestTypes.invitationReceivedByUser,
+        sessionId: newSession.id
+    });
+    const game = data.game;
+    game.players = [currClient.getClientData(), opponent.getClientData()];
+    newSession.setGameParams(game);
+    invitations.set(newSession.id, {clientsPair: [data.clientId, data.opponentId]});
+    opponent.send({
+        requestType: requestTypes.receivedInvitation,
+        clientId: opponent.id,
+        initiator: currClient.getClientData(),
+        gameLevel: game.level,
+        gameSessionId: newSession.id
+    });
+}
+
+function leaveSession(session, client) {
+    session.leaveSession(client);
+    if (session.clients.size === 0) {
+        sessions.delete(session.id);
+    }
+}
+
+
+
+
 
 
 server.on("connection", conn => {
@@ -87,7 +120,7 @@ server.on("connection", conn => {
     conn.on("message", msg => {
         const data = JSON.parse(msg);
 
- 
+
         if (data.requestType) {
             switch (data.requestType) {
                 case requestTypes.initializeSession:
@@ -96,6 +129,10 @@ server.on("connection", conn => {
                 case requestTypes.updateClient:
                     updateClient(data);
                     break;
+                case requestTypes.sendInvitation:
+                    sendInvitation(data);
+                    break;
+
             }
 
         }
