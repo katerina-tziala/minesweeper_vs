@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "custom websocket ",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/katerina-tziala/minesweeper_vs.git"
+  },
+  "author": "katerina tziala",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/katerina-tziala/minesweeper_vs/issues"
+  },
+  "homepage": "https://github.com/katerina-tziala/minesweeper_vs#readme",
+  "dependencies": {
+    "ws": "^7.2.0"
+  }
+}
