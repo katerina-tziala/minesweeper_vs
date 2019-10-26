@@ -1,20 +1,21 @@
 "use strict";
-let uiManager;
+let uiManager, connectionManager;
 document.addEventListener("DOMContentLoaded", (event) => {
     console.log("hi");
     self.uiManager = new InterfaceManager();
     self.uiManager.hideLoader();
-
+   
+    
+    self.connectionManager = new ConectionManager();
+    
 });
 
 
 function getUserName(event) {
     event.preventDefault();
     const playerName = self.uiManager.getUserName();
-    console.log(playerName);
-    
     if (userNameIsValid(playerName)) {
-        self.uiManager.setLobbyView();
+        self.connectionManager.updateClientName(playerName);
     }
 }
 

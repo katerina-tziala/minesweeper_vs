@@ -7,10 +7,12 @@
     <meta name="wap-font-scale" content="yes">
 
     <link href="css/index.css" rel="stylesheet">
+    <link href="css/players.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/1909df8641.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="minesweeper_vs" class="centeredFlexbox wrap-column">
+        <!-- BANNER -->
         <div id="minesweeper_vs__banner-container" class="centeredFlexbox">
             <div id="minesweeper_vs__banner" class="centeredFlexbox">
                 <span class="banner__letter">m</span>
@@ -28,12 +30,16 @@
                 <span class="banner__letter">r</span>
             </div>
         </div>
-        <div id="minesweeper_vs__lobby-container" class="centeredFlexbox hidden"></div>
+        <!-- LOBBY -->
+        <div id="minesweeper_vs__lobby-container" class="columnStartCenterFlexbox hidden"></div>
+        <!-- USER FORM -->
         <form id="minesweeper_vs__user-form" class="minesweeper_vs__user-form">
             <input id="minesweeper_vs__user-name" name="user_name" placeholder="user name" autocomplete="off" />
             <button id="minesweeper_vs__go-btn" class="minesweeper_vs__btn minesweeper_vs__text-btn" type="button" onclick="getUserName(event)">go</button>
         </form>
+        <!-- GAME CONTAINER -->
         <div id="minesweeper_vs__game-container" class="centeredFlexbox hidden"></div>
+        <!-- POPUP CONTAINER -->
         <div id="minesweeper_vs__popup-container" class="centeredFlexbox hidden">
             <div id="minesweeper_vs__pop-up-message"></div>
         </div>
@@ -48,6 +54,8 @@
     </div>
     <script src="js/constants.js" type="application/javascript"></script>
     <script src="js/InterfaceManager.js" type="application/javascript"></script>
+    <script src="js/ConnectionManager.js" type="application/javascript"></script>
+    <script src="js/client.js" type="application/javascript"></script>
     <script src="js/index.js" type="application/javascript"></script>
 </body>
 </html>

@@ -13,17 +13,11 @@ body {
 .centeredFlexbox {
     display: flex;
     flex-wrap: nowrap;
-    -moz-justify-content: center;
-    -webkit-justify-content: center;
     justify-content: center;
-    -webkit-align-items: center;
     align-items: center;
 }
 
 .no-user-select {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
 }
 
@@ -35,8 +29,22 @@ body {
 .nowrap-column-start {
     flex-wrap: nowrap;
     flex-direction: column;
-    -webkit-align-items: start;
     align-items: start;
+}
+
+.rowStartFlexbox {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: start;
+    align-items: center;
+}
+
+.columnStartCenterFlexbox {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ BUTTONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -168,7 +176,6 @@ body {
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LOBBY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #minesweeper_vs__lobby-container {
-    border: 1px solid green;
     height: 100%;
     width: 100%;
     position: relative;
@@ -225,14 +232,6 @@ body {
       transform: rotate(90deg);
     }
 }
-
-
-
-
-
-
-
-
 
 .hidden {
     visibility: none!important;
