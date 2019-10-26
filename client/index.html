@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MinesweeperVS</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="wap-font-scale" content="yes">
+
+    <link href="css/index.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/1909df8641.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="minesweeper_vs" class="centeredFlexbox wrap-column">
+        <div id="minesweeper_vs__banner" class="centeredFlexbox">
+            <div id="minesweeper__banner" class="centeredFlexbox">
+                <span class="banner__letter">m</span>
+                <span class="banner__letter banner__letter--flag">
+                    <i class="fab fa-font-awesome-flag banner__flag"></i>
+                </span>
+                <span class="banner__letter">n</span>
+                <span class="banner__letter">e</span>
+                <span class="banner__letter">s</span>
+                <span class="banner__letter">w</span>
+                <span class="banner__letter">e</span>
+                <span class="banner__letter">e</span>
+                <span class="banner__letter banner__letter--bomb">p<i class="fas fa-bomb banner__bomb"></i></span>
+                <span class="banner__letter">e</span>
+                <span class="banner__letter">r</span>
+            </div>
+        </div>
+        <div id="minesweeper_vs__lobby-container" class="centeredFlexbox hidden"></div>
+        <form id="minesweeper_vs__user-form" class="minesweeper_vs__user-form">
+            <input id="minesweeper_vs__user-name" name="user_name" placeholder="user name" autocomplete="off" />
+            <button id="minesweeper_vs__go-btn" class="minesweeper_vs__btn minesweeper_vs__text-btn" type="button" onclick="getUserName(event)">go</button>
+        </form>
+        <div id="minesweeper_vs__game-container" class="centeredFlexbox hidden"></div>
+        <div id="minesweeper_vs__popup-container" class="centeredFlexbox hidden">
+            <div id="minesweeper_vs__pop-up-message"></div>
+        </div>
+        <!-- LOADER -->
+        <div id="loader" class="centeredFlexbox">
+            <div id="loader_container" class="loader">
+                <svg viewBox="0 0 32 32" width="32" height="32">
+                    <circle id="spinner" class="spinner spin" cx="16" cy="16" r="14" fill="none"></circle>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <script src="js/constants.js" type="application/javascript"></script>
+    <script src="js/InterfaceManager.js" type="application/javascript"></script>
+    <script src="js/index.js" type="application/javascript"></script>
+</body>
+</html>

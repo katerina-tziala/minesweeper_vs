@@ -1,0 +1,247 @@
+/*css add all prefixes*/
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+body {
+    background-color: #0d0d0d;
+    color:  #737373;
+}
+
+.centeredFlexbox {
+    display: flex;
+    flex-wrap: nowrap;
+    -moz-justify-content: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.no-user-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.wrap-column {
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.nowrap-column-start {
+    flex-wrap: nowrap;
+    flex-direction: column;
+    -webkit-align-items: start;
+    align-items: start;
+}
+
+
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ BUTTONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+.minesweeper_vs__btn {
+    cursor: pointer;
+    outline: none;
+    border: none;
+    border-radius: 6px;
+    display: inline-block;
+    background-color: #595959;
+}
+
+.minesweeper_vs__icon-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 20px;
+    display: block;
+    padding-top: 2px;
+}
+
+.minesweeper_vs__text-btn {
+    padding: 5px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.minesweeper_vs__btn:hover {
+    background-color: #00e6e6;
+    box-shadow: 0px 0px 10px #00e6e6;
+}
+
+
+
+
+
+
+
+
+
+
+#minesweeper_vs {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ BANNER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+#minesweeper__banner-container {
+    width: 100%;
+}
+
+#minesweeper__banner {
+    color: #333333;
+    display: inline-block;
+}
+
+.banner__letter {
+    font-size: 90px;
+    position: relative;
+    display: inline-block;
+    margin: 0 2px;
+}
+
+.banner__letter--flag {
+    font-size: 30px;
+    width: 52px;
+}
+
+.banner__flag {
+    position: absolute;
+    font-size: 60px;
+    bottom: -5px;
+    color: #00e6e6;
+    text-shadow: 0 0 5px #00e6e6;
+}
+
+.banner__letter--bomb {
+    width: 60px;
+}
+
+.banner__bomb {
+    position: absolute;
+    font-size: 60px;
+    bottom: 24px;
+    background-color: #0d0d0d;
+    left: 2px;
+    z-index: 1000;
+    padding-bottom: 4px;
+    border-bottom-left-radius: 20px;
+    color: #00e6e6;
+    text-shadow: 0 0 5px #00e6e6;
+}
+
+.top-banner {
+    position: absolute;
+    top: -16px;
+    left: 0;
+    z-index: 5000;
+    height: 66px;
+    overflow: hidden;
+    border-bottom: 2px solid #333333;
+}
+
+.top-banner > #minesweeper__banner {
+    transform: scale(0.4, 0.4);
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ USER FORM ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+#minesweeper_vs__user-form {
+    display: inline-block;
+    padding: 20px;
+}
+
+#minesweeper_vs__user-name {
+    display: inline-block;
+    background-color: #0d0d0d;
+    outline: none;
+    border: none;
+    border-bottom: 2px solid #00e6e6;
+    padding: 4px;
+    margin: auto;
+    width: 200px;
+    font-size: 16px;
+    color: #00e6e6;
+}
+
+#minesweeper_vs__go-btn {
+    display: inline-block;
+    margin-left: 30px;
+    font-size: 16px;
+}
+
+
+
+
+
+
+
+
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LOADER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+#loader {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    flex-flow: column nowrap;
+    z-index: 10000;
+    padding-left: 6px;
+    background-color: #0d0d0d;
+}
+
+#loader_container {
+    transform: scale(1.5, 1.5);
+}
+
+#spinner {
+    stroke: #00e6e6;
+    stroke-width: 3px;
+    transform-origin: 50%;
+}
+
+.spin {
+    animation: line 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite, rotate 1.2s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(450deg);
+    }
+}
+
+@keyframes line {
+    0% {
+      stroke-dasharray: 2, 85.964;
+      transform: rotate(0);
+    }
+    50% {
+      stroke-dasharray: 65.973, 21.9911;
+      stroke-dashoffset: 0;
+    }
+    100% {
+      stroke-dasharray: 2, 85.964;
+      stroke-dashoffset: -65.973;
+      transform: rotate(90deg);
+    }
+}
+
+
+
+
+
+
+
+
+
+.hidden {
+    visibility: none!important;
+    display: none!important;
+}
