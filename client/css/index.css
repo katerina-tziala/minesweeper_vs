@@ -1,4 +1,3 @@
-/*css add all prefixes*/
 * {
     box-sizing: border-box;
     margin: 0;
@@ -40,8 +39,6 @@ body {
     align-items: start;
 }
 
-
-
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ BUTTONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 .minesweeper_vs__btn {
     cursor: pointer;
@@ -71,15 +68,7 @@ body {
     box-shadow: 0px 0px 10px #00e6e6;
 }
 
-
-
-
-
-
-
-
-
-
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MAIN CONTENT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #minesweeper_vs {
     width: 100vw;
     height: 100vh;
@@ -87,12 +76,16 @@ body {
     position: relative;
 }
 
+.content_main-view {
+    flex-grow: 1;
+    padding-top: 50px;
+}
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ BANNER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-#minesweeper__banner-container {
+#minesweeper_vs__banner-container {
     width: 100%;
 }
 
-#minesweeper__banner {
+#minesweeper_vs__banner {
     color: #333333;
     display: inline-block;
 }
@@ -144,7 +137,7 @@ body {
     border-bottom: 2px solid #333333;
 }
 
-.top-banner > #minesweeper__banner {
+.top-banner > #minesweeper_vs__banner {
     transform: scale(0.4, 0.4);
 }
 
@@ -173,13 +166,13 @@ body {
     font-size: 16px;
 }
 
-
-
-
-
-
-
-
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LOBBY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+#minesweeper_vs__lobby-container {
+    border: 1px solid green;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LOADER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #loader {
