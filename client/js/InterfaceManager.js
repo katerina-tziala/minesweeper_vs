@@ -39,11 +39,13 @@ class InterfaceManager {
     }
 
     setLobbyView() {
+        this.setAppViewAndBanner();
         this.hideElement(this.domElements.userForm);
         this.displayElement(this.domElements.lobby);
         this.hideElement(this.domElements.gameContainer);
         this.hideElement(this.domElements.game);
-        this.setAppViewAndBanner();
+  
+console.log(this.domElements.lobby);
     }
 
     setAppViewAndBanner() {
@@ -133,40 +135,40 @@ class InterfaceManager {
 
     createInvitation() {
         const invitationHeader = document.createElement("h2");
-        invitationHeader.classList.add(Constants.classList.invitationHeader);
+        invitationHeader.classList.add(Constants.popupClassList.invitationHeader);
         invitationHeader.innerHTML = `invite player`;
         const form = document.createElement("form");
         const formHeader = document.createElement("p");
-        formHeader.classList.add(Constants.classList.formHeader);
+        formHeader.classList.add(Constants.popupClassList.formHeader);
         formHeader.innerHTML = "Select game level:";
         form.append(formHeader);
         for (let index = 0; index < Constants.gameLevels.length; index++) {
-            const level = Constants.gameLevels[index];
+            const gameLevel = Constants.gameLevels[index];
             const checked = (index === 0) ? true : false;
-            const label = this.createFormRadioButton(level, checked);
+            const label = this.createFormRadioButton(gameLevel, checked);
             form.append(label);
         }
         const sendBtn = this.createButton(this.sendInvitation)
-        sendBtn.classList.add(Constants.classList.buttonText, Constants.classList.sendInvitationBtn);
+        sendBtn.classList.add(Constants.classList.buttonText, Constants.popupClassList.sendInvitationBtn);
         sendBtn.innerHTML = "send";
         const cancelBtn = this.createButton(this.cancelInvitation);
         const iconclasses = Constants.fontAwesomeClassList.timesX.split(" ");
-        cancelBtn.classList.add(Constants.classList.buttonIcon, Constants.classList.cancelInvitationBtn, iconclasses[0], iconclasses[1]);
+        cancelBtn.classList.add(Constants.classList.buttonIcon, Constants.popupClassList.cancelInvitationBtn, iconclasses[0], iconclasses[1]);
         this.domElements.popUpMessageContainer.append(invitationHeader, form, sendBtn, cancelBtn);
     }
 
-    createFormRadioButton(level, checked) {
+    createFormRadioButton(gameLevel, checked) {
         const label = document.createElement("label");
-        label.classList.add(Constants.classList.radioContainer);
+        label.classList.add(Constants.popupClassList.radioContainer);
         const labelTag = document.createElement("span");
-        labelTag.innerHTML = level;
+        labelTag.innerHTML = gameLevel;
         const radioBtn = document.createElement("input");
-        radioBtn.value = level;
+        radioBtn.value = gameLevel;
         radioBtn.name = "game_level";
         radioBtn.type = "radio";
         radioBtn.checked = checked;
         const checkmark = document.createElement("span");
-        checkmark.classList.add(Constants.classList.checkmark);
+        checkmark.classList.add(Constants.popupClassList.checkmark);
         label.append(labelTag, radioBtn, checkmark);
         return label;
     }
@@ -188,11 +190,11 @@ class InterfaceManager {
         this.displayPopUp();
         const message = document.createElement("p");
         message.innerHTML = `Waiting for <b><i>"${opponent.name}"</i></b> to join the game`;
-        message.classList.add(Constants.classList.waitingMesage);
+        message.classList.add(Constants.popupClassList.waitingMesage);
         this.domElements.popUpMessageContainer.append(message);
         for (let index = 0; index < 3; index++) {
             const dot = document.createElement("div");
-            dot.classList.add(Constants.classList.blinkDot);
+            dot.classList.add(Constants.popupClassList.blinkDot);
             dot.innerHTML = ".";
             this.domElements.popUpMessageContainer.append(dot);
         }
@@ -203,10 +205,10 @@ class InterfaceManager {
         const message = document.createElement("p");
         message.innerHTML = `<b><i>"${initiator}"</i></b> invited you for a minesweeper game (${gameLevel} level)`;
         const acceptBtn = this.createButton(this.acceptInvitation);
-        acceptBtn.classList.add(Constants.classList.buttonText, Constants.classList.receivedInvitationBtn);
+        acceptBtn.classList.add(Constants.classList.buttonText, Constants.popupClassList.receivedInvitationBtn);
         acceptBtn.innerHTML = "accept";
         const declineBtn = this.createButton(this.declineInvitation);
-        declineBtn.classList.add(Constants.classList.buttonText, Constants.classList.receivedInvitationBtn);
+        declineBtn.classList.add(Constants.classList.buttonText, Constants.popupClassList.receivedInvitationBtn);
         declineBtn.innerHTML = "decline";
         this.domElements.popUpMessageContainer.append(message, acceptBtn, declineBtn);
     }
@@ -216,7 +218,7 @@ class InterfaceManager {
         const message = document.createElement("p");
         message.innerHTML = `<b><i>"${declinedPlayerName}"</i></b> declined your invitation!`;
         const okBtn = this.createButton(this.backToLobby);
-        okBtn.classList.add(Constants.classList.buttonText, Constants.classList.receivedInvitationBtn);
+        okBtn.classList.add(Constants.classList.buttonText, Constants.popupClassList.receivedInvitationBtn);
         okBtn.innerHTML = "ok";
         this.domElements.popUpMessageContainer.append(message, okBtn);
     }
@@ -231,7 +233,7 @@ class InterfaceManager {
         const boardParameters = Constants.gameParameters[gameLevel];
         const mineList = self.uiManager.getMineList(boardParameters);
         const gameParameters = {
-            level: gameLevel,
+            gameLevel: gameLevel,
             boardParameters: boardParameters,
             mineList: mineList
         };

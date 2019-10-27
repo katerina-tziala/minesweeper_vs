@@ -48,12 +48,25 @@ class BoardTile {
         return (!this.isMine && this.mineCount === 0) ? true : false;
     }
 
+    isFlaggedCorrectly() {
+        return (this.isFlagged && this.isMine) ? true : false;
+    }
+
+    isFlaggedWrongly() {
+        return (this.isFlagged && !this.isMine) ? true : false;
+    }
+
+    isMineRevealed() {
+        return (this.isMine && !this.isFlagged && this.isRevealed) ? true : false;
+    }
+ 
+
     setBoardTileDisplay(playerColor) {
-        if (this.isMine && !this.isFlagged) {
+        if (this.isMineRevealed()) {
             this.styleMineBoardTile();
-        } else if (this.isMine && this.isFlagged) {
+        } else if (this.isFlaggedCorrectly()) {
             this.styleFlaggedBoardTile(playerColor);
-        } else if (!this.isMine && this.isFlagged) {
+        } else if (this.isFlaggedWrongly()) {
             this.styleWroglyFlaggedBoardTile(playerColor);
         } else {
             this.styleEmptyBoardTile();

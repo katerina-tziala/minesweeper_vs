@@ -3,11 +3,12 @@ class Game {
         this.id = id;
         this.players = [];
         this.boardSettings = gameParameters.boardParameters;
-        this.gameLevel = gameParameters.level;
+        this.gameLevel = gameParameters.gameLevel;
         this.mineList = gameParameters.mineList;
         this.playerOnTurn = undefined;
         this.waitingPlayer = undefined;
         this.turnSeconds = Constants.playerTurnSeconds;
+        this.allMinesFlagged = false;
         this.setGamePlayers(gameParameters);
         this.initializeGame();
         this.renderPlayersOnGame();
@@ -17,8 +18,9 @@ class Game {
     initializeGame() {
         self.uiManager.initializeGameView();
         this.board = new Board(this.boardSettings.dimensions, this.mineList, this.clickBoardTile);
-        this.mineCounter = new DigitalCounter(Constants.dom_elements_ids.gameMineCounter);
         this.timeCounter = new DigitalCounter(Constants.dom_elements_ids.gameTimer);
+        this.mineCounter = new DigitalCounter(Constants.dom_elements_ids.gameMineCounter);
+        this.mineCounter.setCounter(this.boardSettings.numberOfMines);
     }
 
 
@@ -36,8 +38,8 @@ class Game {
     }
 
     isOpponent(player) {
-        return (player.id !== "VaSkG1JMCJNn") ? true : false;
-        //  return !self.connectionManager.isPLayerThisClient(player) ? true : false;
+        // return (player.id !== "VaSkG1JMCJNn") ? true : false;
+        return !self.connectionManager.isPLayerThisClient(player) ? true : false;
     }
 
     getWaitingPlayer() {
@@ -60,10 +62,10 @@ class Game {
     }
 
     displayInitializationMessage() {
-        const playerInTurn = this.getPlayerOnTurn();
-        let message = `You start`;
-        if (this.isOpponent(playerInTurn)) {
-            message =  `Player ${playerInTurn.name} starts!`;
+        const playerOnTurn = this.getPlayerOnTurn();
+        let message = `You start! Play!`;
+        if (this.isOpponent(playerOnTurn)) {
+            message = `Player ${playerOnTurn.name} starts! You should wait!`;
         }
         self.uiManager.displayTurnMessage(message);
         self.popupTimeout = setTimeout(() => {
@@ -79,7 +81,7 @@ class Game {
         let message = "It's your turn! Play!";
         if (this.isPlayerOnTurnOpponent()) {
             self.uiManager.setGameFreezerOn();
-            message = `${this.playerOnTurn.name} is playing! Wait!`;
+            message = `${this.playerOnTurn.name} is playing! You should wait!`;
         } else {
             self.uiManager.setGameFreezerOff();
         }
@@ -87,10 +89,10 @@ class Game {
             self.uiManager.displayTurnMessage(message);
             self.popupTimeout = setTimeout(() => {
                 self.uiManager.hidePopUp();
-              //  this.setTurnTimer();
+                //  this.setTurnTimer();
             }, 1500);
         } else {
-          //  this.setTurnTimer();
+            //  this.setTurnTimer();
         }
     }
 
@@ -124,29 +126,71 @@ class Game {
         }
     }
 
-    submitMove(boardTiles) {
-        console.log("next turn");
-        self.game.clearTurnTimer();
-        self.uiManager.setGameFreezerOn();
-        console.log(boardTiles);
+    isGameOver() {
+        if (this.playerOnTurn.reachedMissedTurnsLimit() || this.playerOnTurn.revealdMine) {
+            return true;
+        }
+        if (this.board.allMinesFlagged()) {
+            this.allMinesFlagged.true;
+            return true;
+        }
+        return false;
     }
 
+    submitMove(boardTiles) {
+        self.game.clearTurnTimer();
+        self.uiManager.setGameFreezerOn();
+        this.setPlayerMoveResults(boardTiles);
+        this.switchPlayerMoves();
+        const isGameOver = this.isGameOver();
+        const gameUpdate = {
+            boardParameters: this.boardSettings,
+            gameLevel: this.gameLevel,
+            mineList: this.mineList,
+            isGameOver: isGameOver,
+            allMinesFlagged: this.allMinesFlagged,
+            players: [this.playerOnTurn, this.waitingPlayer],
+            tilesToUpdate: boardTiles,
+            mineCounter: this.mineCounter.counterNumber
+        };
+        self.connectionManager.send({
+            requestType: Constants.requestTypes.gameUpdate,
+            gameId: this.id,
+            gameUpdate: gameUpdate
+        });
+    }
+
+    setPlayerMoveResults(boardTiles) {
+        if (!boardTiles.length) {
+            this.playerOnTurn.updateMissedTurns();
+        } else {
+            this.setPlayerFlagResults(boardTiles[0]);
+            if (boardTiles[0].isMineRevealed()) {
+                this.playerOnTurn.revealdMine = true;
+            }
+        }
+    }
+
+    setPlayerFlagResults(boardTile) {
+        if (boardTile.isFlaggedCorrectly()) {
+            this.playerOnTurn.updateCorrectPlacedFlags();
+        }
+        if (boardTile.isFlaggedWrongly()) {
+            this.playerOnTurn.updateWrongPlacedFlags();
+        }
+        this.playerOnTurn.calculatePoints();
+    }
+
+    switchPlayerMoves() {
+        this.playerOnTurn.turn = false;
+        this.waitingPlayer.turn = true;
+    }
 
     updateBoardView(boardTiles, playerColor) {
         boardTiles.forEach(tile => {
             tile.setBoardTileDisplay(playerColor);
         });
     }
-
-
-
-
-
-
-
-
-
-
 
     clickBoardTile(event) {
         event.preventDefault();
@@ -163,7 +207,7 @@ class Game {
 
     flaggTile(clickedTile) {
         clickedTile.setFlagg();
-        this.updateBoardView([clickedTile]);
+        this.updateBoardView([clickedTile], this.playerOnTurn.playerColor);
         this.submitMove([clickedTile]);
     }
 
@@ -174,11 +218,11 @@ class Game {
             this.submitMove([clickedTile]);
         } else if (clickedTile.isEmpty()) {
             const areaToReaveal = self.game.board.getBoardAreaToReveal(clickedTile);
-            this.updateBoardView(areaToReaveal,  this.playerOnTurn.playerColor);
+            this.updateBoardView(areaToReaveal, this.playerOnTurn.playerColor);
             this.submitMove(areaToReaveal);
         } else if (!clickedTile.isEmpty()) {
             clickedTile.setRevealed();
-            this.updateBoardView([clickedTile],  this.playerOnTurn.playerColor);
+            this.updateBoardView([clickedTile], this.playerOnTurn.playerColor);
             this.submitMove([clickedTile]);
         }
     }

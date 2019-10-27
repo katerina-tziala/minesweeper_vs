@@ -134,4 +134,9 @@ class Board {
             return array.map(mapObj => mapObj.id).indexOf(object.id) === position;
         });
     }
+
+    allMinesFlagged() {
+        const bombTilesFlaggedCorrectly = this.boardTiles.filter(boardTile => boardTile.isFlaggedCorrectly());
+        return (bombTilesFlaggedCorrectly.length === this.mineList.length) ? true : false;
+    }
 }

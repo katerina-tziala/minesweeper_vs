@@ -42,7 +42,9 @@ class ConectionManager {
             case Constants.requestTypes.startGame:
                 this.initializeGame(data);
                 break;
-                
+            case Constants.requestTypes.gameUpdate:
+                this.updateGame(data);
+                break;
         }
     }
 
@@ -95,8 +97,15 @@ class ConectionManager {
         const peer = new Client(data.game.players.find(peer => peer.id !== data.clientId));
         peer.setSessionId(data.sessionId);
         this.peers = [peer];
-        self.game = new Game(data.sessionId, data.game);  
+        self.game = new Game(data.sessionId, data.game);
     }
+
+    updateGame(data) {
+  
+        console.log(data);
+     
+    }
+
 
     isPLayerThisClient(player) {
         return (player.id !== this.client.id) ? true : false;

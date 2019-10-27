@@ -14,6 +14,8 @@ const requestTypes = {
     declinedInvitation: "invitation-declined",
     acceptedInvitation: "invitation-accepted",
     startGame: "game-initialization",
+    gameUpdate: "game-update",
+    backToLobby: "back-to-lobby",
 };
 const defaultSessionId = "minesweeper_vs";
 
@@ -95,7 +97,7 @@ function sendInvitation(data) {
         requestType: requestTypes.receivedInvitation,
         clientId: opponent.id,
         initiator: currClient.getClientData(),
-        gameLevel: game.level,
+        gameLevel: game.gameLevel,
         gameSessionId: newSession.id
     });
 }
@@ -145,12 +147,27 @@ function initGame(session) {
     const turn = clientIds[Math.floor(Math.random() * clientIds.length)];
     const gameData = session.getGameData();
     gameData.playerTurn = turn;
+    session.setGameParams(gameData);
     clients.forEach(client => {
         client.send({
             requestType: requestTypes.startGame,
             clientId: client.id,
             sessionId: session.id,
             game: gameData
+        });
+    });
+}
+
+function updateGame(data) {
+    const gameSession = getSession(data.gameId);
+    gameSession.setGameParams(data.gameUpdate);
+    const clients = getSessionClients(gameSession);
+    clients.forEach(client => {
+        client.send({
+            requestType: requestTypes.gameUpdate,
+            clientId: client.id,
+            sessionId: gameSession.id,
+            gameUpdate: data.gameUpdate
         });
     });
 }
@@ -177,6 +194,9 @@ server.on("connection", conn => {
                     break;
                 case requestTypes.acceptedInvitation:
                     invitationAccepted(data);
+                    break;
+                case requestTypes.gameUpdate:
+                    updateGame(data);
                     break;
             }
         }
