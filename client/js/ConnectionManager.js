@@ -36,9 +36,12 @@ class ConectionManager {
             case Constants.requestTypes.invitationReceivedByUser:
                 this.updateCurrentClientSession(data);
                 break;
+            case Constants.requestTypes.declinedInvitation:
+                this.declinedInvitation(data);
+                break;
         }
     }
-
+    
     updateConnection(data) {
         this.peers = [];
         const peers = data.peers.filter(peer => peer.id !== data.clientId);
@@ -73,6 +76,13 @@ class ConectionManager {
 
     invitationReceived(data) {
         this.receivedInvitation = data;
-        self.uiManager.displayReceivedInvitation(data.initiator.name, data.gameLevel)
+        self.uiManager.displayReceivedInvitation(data.initiator.name, data.gameLevel);
     }
+
+    declinedInvitation(data) {
+        const playerDeclined = this.peers.find(peer => peer.id === data.playerDeclined);
+        self.uiManager.displayDeclinedInvitationMessage(playerDeclined.name);
+        this.updateCurrentClientSession(data);
+    }
+    
 }

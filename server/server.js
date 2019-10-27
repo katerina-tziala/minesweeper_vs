@@ -9,10 +9,11 @@ const requestTypes = {
     sessionBroadcast: "session-broadcast",
     updateClient: "update-client",
     sendInvitation: "send-invitation",
-    invitationReceivedByUser:"invitation-received-by-user",
+    invitationReceivedByUser: "invitation-received-by-user",
     receivedInvitation: "received-invitation",
+    declinedInvitation: "invitation-declined",
 };
-
+const defaultSessionId = "minesweeper_vs";
 
 function generateId(len = 12, chars = "abcdefghjkmnopqrstvwxyz01234567890ABCDEFGHJKMNOPQRSTVWXYZ") {
     let id = "";
@@ -26,7 +27,6 @@ function createClient(conn, id = generateId()) {
     return new Client(conn, id);
 
 }
-
 
 function createSession(id = generateId()) {
     if (sessions.has(id)) {
@@ -43,7 +43,6 @@ function createSession(id = generateId()) {
 function getSession(id) {
     return sessions.get(id);
 }
-
 
 function getSessionClients(session) {
     return [...session.clients];
@@ -91,7 +90,7 @@ function sendInvitation(data) {
     const game = data.game;
     game.players = [currClient.getClientData(), opponent.getClientData()];
     newSession.setGameParams(game);
-    invitations.set(newSession.id, {clientsPair: [data.clientId, data.opponentId]});
+    invitations.set(newSession.id, { clientsPair: [data.clientId, data.opponentId] });
     opponent.send({
         requestType: requestTypes.receivedInvitation,
         clientId: opponent.id,
@@ -108,7 +107,21 @@ function leaveSession(session, client) {
     }
 }
 
-
+function invitationDeclined(data) {
+    const currentSession = getSession(data.gameSessionId);
+    const clients = getSessionClients(currentSession);
+    const currClient = clients.find(client => client.id === data.initiator.id);
+    leaveSession(currentSession, currClient);
+    const newSession = getSession(defaultSessionId);
+    newSession.joinSession(currClient);
+    currClient.setNewSession(newSession);
+    currClient.send({
+        requestType: requestTypes.declinedInvitation,
+        sessionId: newSession.id,
+        playerDeclined: data.clientId
+    });
+    broadcastSession(newSession);
+}
 
 
 
@@ -132,7 +145,9 @@ server.on("connection", conn => {
                 case requestTypes.sendInvitation:
                     sendInvitation(data);
                     break;
-
+                case requestTypes.declinedInvitation:
+                    invitationDeclined(data);
+                    break;
             }
 
         }

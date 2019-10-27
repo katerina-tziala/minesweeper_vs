@@ -53,6 +53,7 @@ class Constants {
         sendInvitation: "send-invitation",
         invitationReceivedByUser:"invitation-received-by-user",
         receivedInvitation: "received-invitation",
+        declinedInvitation: "invitation-declined",
     };
 
     static defaultSessionId = "minesweeper_vs";

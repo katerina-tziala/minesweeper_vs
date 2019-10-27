@@ -190,11 +190,11 @@ class InterfaceManager {
             this.domElements.popUpMessageContainer.append(dot);
         }
     }
-    
+
     displayReceivedInvitation(initiator, gameLevel) {
         this.displayPopUp();
         const message = document.createElement("p");
-        message.innerHTML = `${initiator} invited you for a minesweeper game (${gameLevel} level)`;
+        message.innerHTML = `<b><i>"${initiator}"</i></b> invited you for a minesweeper game (${gameLevel} level)`;
         const acceptBtn = this.createButton(this.acceptInvitation);
         acceptBtn.classList.add(Constants.classList.buttonText, Constants.classList.receivedInvitationBtn);
         acceptBtn.innerHTML = "accept";
@@ -204,9 +204,15 @@ class InterfaceManager {
         this.domElements.popUpMessageContainer.append(message, acceptBtn, declineBtn);
     }
 
-
-
-
+    displayDeclinedInvitationMessage(declinedPlayerName) {
+        this.displayPopUp();
+        const message = document.createElement("p");
+        message.innerHTML = `<b><i>"${declinedPlayerName}"</i></b> declined your invitation!`;
+        const okBtn = this.createButton(this.backToLobby);
+        okBtn.classList.add(Constants.classList.buttonText, Constants.classList.receivedInvitationBtn);
+        okBtn.innerHTML = "ok";
+        this.domElements.popUpMessageContainer.append(message, okBtn);
+    }
 
     invitePlayer() {
         self.playerToInviteID = this.getAttribute("id")
@@ -239,14 +245,23 @@ class InterfaceManager {
     }
 
     acceptInvitation() {
-       console.log("acceptInvitation");
-       
+        console.log("acceptInvitation");
+        console.log(self.connectionManager.receivedInvitation);
+
     }
 
     declineInvitation() {
-        console.log("declineInvitation");
-        
-     }
+        const invitation = self.connectionManager.receivedInvitation;
+        self.connectionManager.send({
+            requestType: Constants.requestTypes.declinedInvitation,
+            gameSessionId: invitation.gameSessionId,
+            initiator: invitation.initiator,
+            clientId: self.connectionManager.client.id
+        });
+        self.uiManager.hidePopUp();
+    }
 
-    
+    backToLobby() {
+        self.uiManager.hidePopUp();
+    }
 }
