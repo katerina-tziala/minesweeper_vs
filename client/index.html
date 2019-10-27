@@ -8,6 +8,8 @@
     <link href="css/index.css" rel="stylesheet">
     <link href="css/players.css" rel="stylesheet">
     <link href="css/popup.css" rel="stylesheet">
+    <link href="css/game.css" rel="stylesheet">
+    <link href="css/board.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/1909df8641.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -38,7 +40,18 @@
             <button id="minesweeper_vs__go-btn" class="minesweeper_vs__btn minesweeper_vs__text-btn" type="button" onclick="getUserName(event)">go</button>
         </form>
         <!-- GAME CONTAINER -->
-        <div id="minesweeper_vs__game-container" class="centeredFlexbox hidden"></div>
+        <div id="minesweeper_vs__game-container" class="columnStartCenterFlexbox hidden">
+            <div id="minesweeper_vs__players-in-game-container"></div>
+            <div id="minesweeper_vs__game" class="minesweeper_vs__game hidden">
+                <div class="centeredFlexbox">
+                    <div id="game__mine-counter" class="centeredFlexbox"></div>
+                    <div id="game__flag" class="fab fa-font-awesome-flag"></div>
+                    <div id="game__timer" class="centeredFlexbox"></div>
+                </div>
+                <div id="game__board"></div>
+                <div id="game__freezer" class="game__freezer"></div>
+            </div>
+        </div>
         <!-- POPUP CONTAINER -->
         <div id="minesweeper_vs__popup-container" class="centeredFlexbox minesweeper_vs__popup-container">
             <div id="minesweeper_vs__pop-up-message"></div>
@@ -57,6 +70,8 @@
     <script src="js/ConnectionManager.js" type="application/javascript"></script>
     <script src="js/client.js" type="application/javascript"></script>
     <script src="js/game/game.js" type="application/javascript"></script>
+    <script src="js/game/board.js" type="application/javascript"></script>
+    <script src="js/game/boardTile.js" type="application/javascript"></script>
     <script src="js/index.js" type="application/javascript"></script>
 </body>
 </html>

@@ -96,6 +96,7 @@ class ConectionManager {
         peer.setSessionId(data.sessionId);
         this.peers = [peer];
         console.log(data);
+        console.log(JSON.stringify(data));
         
     }
 }

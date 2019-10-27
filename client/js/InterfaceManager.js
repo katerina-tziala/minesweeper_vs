@@ -43,6 +43,10 @@ class InterfaceManager {
         this.hideElement(this.domElements.userForm);
         this.displayElement(this.domElements.lobby);
         this.hideElement(this.domElements.gameContainer);
+        this.setAppViewAndBanner();
+    }
+
+    setAppViewAndBanner() {
         this.domElements.banner.classList.add(Constants.classList.topBanner);
         this.domElements.minesweeperVS.classList.remove(Constants.classList.wrapColumn);
         this.domElements.minesweeperVS.classList.add(Constants.classList.noWrapColumnStart, Constants.classList.mainContentDisplay);
@@ -90,7 +94,7 @@ class InterfaceManager {
 
     createUserCardIcon() {
         const playerIcon = document.createElement("div");
-        playerIcon.className = Constants.classList.fontAwesome_ninja;
+        playerIcon.className = Constants.fontAwesomeClassList.ninja;
         playerIcon.classList.add(Constants.classList.playerIcon);
         return playerIcon;
     }
@@ -143,7 +147,7 @@ class InterfaceManager {
         sendBtn.classList.add(Constants.classList.buttonText, Constants.classList.sendInvitationBtn);
         sendBtn.innerHTML = "send";
         const cancelBtn = this.createButton(this.cancelInvitation);
-        const iconclasses = Constants.classList.fontAwesome_times.split(" ");
+        const iconclasses = Constants.fontAwesomeClassList.timesX.split(" ");
         cancelBtn.classList.add(Constants.classList.buttonIcon, Constants.classList.cancelInvitationBtn, iconclasses[0], iconclasses[1]);
         this.domElements.popUpMessageContainer.append(invitationHeader, form, sendBtn, cancelBtn);
     }
@@ -268,5 +272,25 @@ class InterfaceManager {
 
     backToLobby() {
         self.uiManager.hidePopUp();
+    }
+
+    initializeGameView() {
+        console.log("initializeGameView");
+        this.hidePopUp();
+        this.setAppViewAndBanner();
+        this.hideElement(this.domElements.lobby);
+        this.domElements.lobby = "";
+        this.displayElement(this.domElements.gameContainer);
+        this.hideElement(this.domElements.userForm);
+        this.displayElement(this.domElements.gameContainer);
+        this.domElements.gamePlayersContainer.innerHTML = "";
+        this.domElements.gameMineCounter.innerHTML = "";
+        this.domElements.gameTimer.innerHTML = "";
+        this.domElements.gameBoard.innerHTML = "";
+
+
+        this.displayElement(this.domElements.game);
+        this.hideElement(this.domElements.gameFreezer);
+
     }
 }

@@ -6,14 +6,21 @@ class Constants {
         banner: "minesweeper_vs__banner-container",
         userForm: "minesweeper_vs__user-form",
         userNameInput: "minesweeper_vs__user-name",
-        gameContainer: "minesweeper_vs__game-container",
         popUpContainer: "minesweeper_vs__popup-container",
         popUpMessageContainer: "minesweeper_vs__pop-up-message",
         loader: "loader",
         lobby: "minesweeper_vs__lobby-container",
+        gameContainer: "minesweeper_vs__game-container",
+        gamePlayersContainer: "minesweeper_vs__players-in-game-container",
+        game: "minesweeper_vs__game",
+        gameMineCounter: "game__mine-counter",
+        gameFlagOnPlay: "game__flag",
+        gameTimer: "game__timer",
+        gameBoard: "game__board",
+        gameFreezer: "game__freezer"  
     };
 
-
+//break classlist down
     static classList = {
         hidden: "hidden",
         topBanner: "top-banner",
@@ -21,6 +28,7 @@ class Constants {
         wrapColumn: "wrap-column",
         noWrapColumnStart: "nowrap-column-start",
         rowStartFlexbox: "rowStartFlexbox",
+        centeredFlexbox: "centeredFlexbox",
         playerCard: "player-card",
         playerIcon: "player-icon",
         playerName: "player-name",
@@ -39,9 +47,28 @@ class Constants {
         receivedInvitationBtn: "received-invitation-btn",
         waitingMesage: "waiting-message",
         blinkDot: "blink-dot",
-        fontAwesome_ninja: "fas fa-user-ninja",
-        fontAwesome_times: "fas fa-times",
     };
+
+
+    static boardClassList = {
+        boardRow : "board__row",
+        boardTile : "board__tile",
+        boardTileMine: "tile__mine",
+        boardTileMineFailed: "tile__mine--failed",
+        boardTileNumber : "tile__number",
+        boardTileNumberIdentifier: "tile__number--",
+        boardTileFlag : "tile__flag",
+        boardTileFlaggedWrongly: "board__tile--wrongly-flagged"
+    };
+
+    static fontAwesomeClassList = {
+        flag: "fab fa-font-awesome-flag",
+        ninja: "fas fa-user-ninja",
+        timesX: "fas fa-times",
+        timesCircle: "far fa-times-circle",
+        bomb: "fas fa-bomb",
+    };
+    
 
     static connectionLink = "ws://localhost:9000";
 

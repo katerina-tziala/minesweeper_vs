@@ -27,7 +27,6 @@ function generateId(len = 12, chars = "abcdefghjkmnopqrstvwxyz01234567890ABCDEFG
 
 function createClient(conn, id = generateId()) {
     return new Client(conn, id);
-
 }
 
 function createSession(id = generateId()) {
@@ -159,6 +158,7 @@ function initGame(session) {
 server.on("connection", conn => {
     console.log("Connection established");
     const client = createClient(conn);
+
     conn.on("message", msg => {
         const data = JSON.parse(msg);
         if (data.requestType) {
