@@ -54,6 +54,8 @@ class Constants {
         invitationReceivedByUser:"invitation-received-by-user",
         receivedInvitation: "received-invitation",
         declinedInvitation: "invitation-declined",
+        acceptedInvitation: "invitation-accepted",
+        startGame: "game-initialization",
     };
 
     static defaultSessionId = "minesweeper_vs";

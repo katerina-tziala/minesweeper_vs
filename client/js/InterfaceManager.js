@@ -245,9 +245,14 @@ class InterfaceManager {
     }
 
     acceptInvitation() {
-        console.log("acceptInvitation");
-        console.log(self.connectionManager.receivedInvitation);
-
+        const invitation = self.connectionManager.receivedInvitation;
+        self.connectionManager.send({
+            requestType: Constants.requestTypes.acceptedInvitation,
+            gameId: invitation.gameSessionId,
+            initiatorId: invitation.initiator.id,
+            playerToJoin: invitation.clientId,
+            sessionToLeaveId: self.connectionManager.client.sessionId
+        });
     }
 
     declineInvitation() {

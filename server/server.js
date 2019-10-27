@@ -12,6 +12,8 @@ const requestTypes = {
     invitationReceivedByUser: "invitation-received-by-user",
     receivedInvitation: "received-invitation",
     declinedInvitation: "invitation-declined",
+    acceptedInvitation: "invitation-accepted",
+    startGame: "game-initialization",
 };
 const defaultSessionId = "minesweeper_vs";
 
@@ -88,7 +90,6 @@ function sendInvitation(data) {
         sessionId: newSession.id
     });
     const game = data.game;
-    game.players = [currClient.getClientData(), opponent.getClientData()];
     newSession.setGameParams(game);
     invitations.set(newSession.id, { clientsPair: [data.clientId, data.opponentId] });
     opponent.send({
@@ -123,17 +124,43 @@ function invitationDeclined(data) {
     broadcastSession(newSession);
 }
 
+function invitationAccepted(data) {
+    const currentSession = getSession(data.sessionToLeaveId);
+    const currClient = getSessionClients(currentSession).find(client => client.id === data.playerToJoin);
+    leaveSession(currentSession, currClient);
+    broadcastSession(currentSession);
+    const gameSession = getSession(data.gameId);
+    gameSession.joinSession(currClient);
+    currClient.setNewSession(gameSession);
+    const opponent = getSessionClients(gameSession).find(client => client.id === data.initiatorId);
+    const gameData = gameSession.getGameData();
+    gameData.players = [currClient.getClientData(), opponent.getClientData()];
+    gameSession.setGameParams(gameData);
+    initGame(gameSession);
+    invitations.delete(data.gameId);
+}
 
-
+function initGame(session) {
+    const clients = getSessionClients(session);
+    const clientIds = clients.map(client => client.id);
+    const turn = clientIds[Math.floor(Math.random() * clientIds.length)];
+    const gameData = session.getGameData();
+    gameData.playerTurn = turn;
+    clients.forEach(client => {
+        client.send({
+            requestType: requestTypes.startGame,
+            clientId: client.id,
+            sessionId: session.id,
+            game: gameData
+        });
+    });
+}
 
 server.on("connection", conn => {
     console.log("Connection established");
     const client = createClient(conn);
-
     conn.on("message", msg => {
         const data = JSON.parse(msg);
-
-
         if (data.requestType) {
             switch (data.requestType) {
                 case requestTypes.initializeSession:
@@ -148,11 +175,11 @@ server.on("connection", conn => {
                 case requestTypes.declinedInvitation:
                     invitationDeclined(data);
                     break;
+                case requestTypes.acceptedInvitation:
+                    invitationAccepted(data);
+                    break;
             }
-
         }
-
-
     });
 
     conn.on("close", () => {
