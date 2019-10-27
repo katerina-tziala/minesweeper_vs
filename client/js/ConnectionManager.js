@@ -95,8 +95,10 @@ class ConectionManager {
         const peer = new Client(data.game.players.find(peer => peer.id !== data.clientId));
         peer.setSessionId(data.sessionId);
         this.peers = [peer];
-        console.log(data);
-        console.log(JSON.stringify(data));
-        
+        self.game = new Game(data.sessionId, data.game);  
+    }
+
+    isPLayerThisClient(player) {
+        return (player.id !== this.client.id) ? true : false;
     }
 }

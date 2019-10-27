@@ -10,7 +10,6 @@ class InterfaceManager {
         Object.keys(Constants.dom_elements_ids).forEach(key => {
             this.domElements[key] = document.getElementById(Constants.dom_elements_ids[key]);
         });
-        console.log(this.domElements);
         this.preventFormSubmissionOnEnter(this.domElements.userForm);
     }
 
@@ -43,6 +42,7 @@ class InterfaceManager {
         this.hideElement(this.domElements.userForm);
         this.displayElement(this.domElements.lobby);
         this.hideElement(this.domElements.gameContainer);
+        this.hideElement(this.domElements.game);
         this.setAppViewAndBanner();
     }
 
@@ -58,7 +58,7 @@ class InterfaceManager {
         this.domElements.lobby.append(clientCard);
         const peersToDisplay = self.connectionManager.peers.filter(peer => peer.entered);
         const playerList = document.createElement("div");
-        playerList.classList.add(Constants.classList.rowStartFlexbox, Constants.classList.playersList);
+        playerList.classList.add(Constants.classList.rowStartFlexbox, Constants.playerClassList.playersList);
         if (peersToDisplay.length) {
             peersToDisplay.forEach(peer => {
                 const peerCard = this.createClientCard(peer, false);
@@ -74,12 +74,12 @@ class InterfaceManager {
 
     createClientCard(client, isThisPlayer = false) {
         const userCard = document.createElement("div");
-        userCard.classList.add(Constants.classList.rowStartFlexbox, Constants.classList.playerCard);
+        userCard.classList.add(Constants.classList.rowStartFlexbox, Constants.playerClassList.playerCard);
         const userIcon = this.createUserCardIcon();
         const userName = this.createUserCardName(client.name);
         if (isThisPlayer) {
-            userCard.classList.add(Constants.classList.playerCard + Constants.classList.selfModifier);
-            userIcon.classList.add(Constants.classList.playerIcon + Constants.classList.selfModifier);
+            userCard.classList.add(Constants.playerClassList.playerCard + Constants.playerClassList.selfModifier);
+            userIcon.classList.add(Constants.playerClassList.playerIcon + Constants.playerClassList.selfModifier);
         }
         userCard.append(userIcon, userName);
         if (!isThisPlayer) {
@@ -95,13 +95,13 @@ class InterfaceManager {
     createUserCardIcon() {
         const playerIcon = document.createElement("div");
         playerIcon.className = Constants.fontAwesomeClassList.ninja;
-        playerIcon.classList.add(Constants.classList.playerIcon);
+        playerIcon.classList.add(Constants.playerClassList.playerIcon);
         return playerIcon;
     }
 
     createUserCardName(name) {
         const playerName = document.createElement("div");
-        playerName.classList.add(Constants.classList.playerName);
+        playerName.classList.add(Constants.playerClassList.playerName);
         playerName.innerHTML = name;
         return playerName;
     }
@@ -120,6 +120,9 @@ class InterfaceManager {
     }
 
     displayPopUp() {
+        if (self.popupTimeout) {
+            clearTimeout(self.popupTimeout);
+        }
         this.domElements.popUpMessageContainer.innerHTML = "";
         this.domElements.popUpContainer.classList.add(Constants.classList.visiblePopUp);
     }
@@ -257,6 +260,7 @@ class InterfaceManager {
             playerToJoin: invitation.clientId,
             sessionToLeaveId: self.connectionManager.client.sessionId
         });
+        self.uiManager.hidePopUp();
     }
 
     declineInvitation() {
@@ -275,7 +279,6 @@ class InterfaceManager {
     }
 
     initializeGameView() {
-        console.log("initializeGameView");
         this.hidePopUp();
         this.setAppViewAndBanner();
         this.hideElement(this.domElements.lobby);
@@ -287,10 +290,60 @@ class InterfaceManager {
         this.domElements.gameMineCounter.innerHTML = "";
         this.domElements.gameTimer.innerHTML = "";
         this.domElements.gameBoard.innerHTML = "";
-
-
         this.displayElement(this.domElements.game);
-        this.hideElement(this.domElements.gameFreezer);
+    }
 
+    setGameFreezerOn() {
+        this.displayElement(this.domElements.gameFreezer);
+    }
+
+    setGameFreezerOff() {
+        this.hideElement(this.domElements.gameFreezer);
+    }
+
+    renderPlayersOnGame(players) {
+        this.domElements.gamePlayersContainer.innerHTML = "";
+        players.forEach(player => {
+            const playerCard = document.createElement("div");
+            playerCard.setAttribute("id", `${Constants.playerClassList.playerCard}_${player.id}`)
+            playerCard.classList.add(Constants.classList.rowStartFlexbox, Constants.playerClassList.playerCard);
+            const userIcon = this.createUserCardIcon();
+            const userName = this.createUserCardName(player.name);
+            const playerFlag = document.createElement("div");
+            const fontAwesomeClassList = Constants.fontAwesomeClassList.flag.split(" ");
+            playerFlag.classList.add(fontAwesomeClassList[0], fontAwesomeClassList[1], Constants.playerClassList.playerFlag);
+            playerCard.append(userIcon, userName, playerFlag);
+            this.domElements.gamePlayersContainer.append(playerCard);
+        });
+    }
+
+    displayTurnMessage(message) {
+        this.displayPopUp();
+        const messageContainer = document.createElement("p");
+        messageContainer.innerHTML = message;
+        this.domElements.popUpMessageContainer.append(messageContainer);
+    }
+
+    clearCardDisplay(element) {
+        element.style.color = null;
+        element.style.boxShadow = null;
+        element.querySelectorAll(".player-icon")[0].style.border = null;
+    }
+
+    setPlayerOnTurnCardDisplay(element, color) {
+        this.clearCardDisplay(element);
+        element.style.color = color;
+        element.style.boxShadow = `0px 0px 5px ${color}`;
+        element.querySelectorAll(".player-icon")[0].style.border = `2px solid ${color}`;
+    }
+
+    setPlayerOnTurnBoardDisplay(color) {
+        this.domElements.game.style.border = `1px solid ${color}`;
+        this.domElements.game.style.boxShadow = `0px 0px 12px ${color}`;
+        this.setFlagOnPlayColor(color);
+    }
+
+    setFlagOnPlayColor(color) {
+        this.domElements.gameFlagOnPlay.style.color = color;
     }
 }

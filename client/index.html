@@ -10,6 +10,7 @@
     <link href="css/popup.css" rel="stylesheet">
     <link href="css/game.css" rel="stylesheet">
     <link href="css/board.css" rel="stylesheet">
+    <link href="css/digital-counter.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/1909df8641.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -41,9 +42,9 @@
         </form>
         <!-- GAME CONTAINER -->
         <div id="minesweeper_vs__game-container" class="columnStartCenterFlexbox hidden">
-            <div id="minesweeper_vs__players-in-game-container"></div>
+            <div id="minesweeper_vs__players-in-game-container" class="centeredFlexbox"></div>
             <div id="minesweeper_vs__game" class="minesweeper_vs__game hidden">
-                <div class="centeredFlexbox">
+                <div id="game__info" class="centeredFlexbox">
                     <div id="game__mine-counter" class="centeredFlexbox"></div>
                     <div id="game__flag" class="fab fa-font-awesome-flag"></div>
                     <div id="game__timer" class="centeredFlexbox"></div>
@@ -72,6 +73,8 @@
     <script src="js/game/game.js" type="application/javascript"></script>
     <script src="js/game/board.js" type="application/javascript"></script>
     <script src="js/game/boardTile.js" type="application/javascript"></script>
+    <script src="js/game/digitalCounter.js" type="application/javascript"></script>
+    <script src="js/game/player.js" type="application/javascript"></script>
     <script src="js/index.js" type="application/javascript"></script>
 </body>
 </html>
