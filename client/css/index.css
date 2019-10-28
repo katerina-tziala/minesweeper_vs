@@ -47,10 +47,11 @@ body {
 .minesweeper_vs__btn {
   cursor: pointer;
   outline: none;
-  border: none;
   border-radius: 6px;
   display: inline-block;
-  background-color: #595959;
+  border: 1px solid #00e6e6;
+  background-color: transparent;
+  color: #00e6e6;
 }
 
 .minesweeper_vs__icon-btn {
@@ -70,6 +71,7 @@ body {
 .minesweeper_vs__btn:hover {
   background-color: #00e6e6;
   box-shadow: 0px 0px 10px #00e6e6;
+  color: #0d0d0d;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MAIN CONTENT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */

@@ -1,16 +1,13 @@
 class Player {
-    constructor(id, name) { 
+    constructor(id, name) {
         this.id = id;
         this.name = name;
-        this.points = 0;
-        this.correctPlacedFlags = 0;
-        this.wrongPlacedFlags = 0;
-        this.missedTurns = 0;
+        this.playerColor = Constants.playerColors.thisPlayer;
+        this.minesFound = 0;
+        this.missedConsecutinveTurns = 0;
         this.turn = false;
-        this.leftGame = false;
         this.isWinner = false;
         this.revealdMine = false;
-        this.playerColor = Constants.playerColors.thisPlayer;
     }
 
     setPLayerColor(color) {
@@ -25,24 +22,16 @@ class Player {
         this.boardTilesOnMove = boardTiles;
     }
 
-    updateMissedTurns() {
-        this.missedTurns++;
+    updateMissedConsecutiveTurns() {
+        this.missedConsecutinveTurns++;
     }
 
-    updateCorrectPlacedFlags() {
-        this.correctPlacedFlags++;
+    updateMinesFound() {
+        this.minesFound++;
     }
 
-    updateWrongPlacedFlags() {
-        this.wrongPlacedFlags++;
+    reachedMissedConsecutiveTurnsLimit() {
+        return (this.missedConsecutinveTurns === Constants.missedConsecutinveTurnsLimit) ? true : false;
     }
 
-    calculatePoints() {
-        this.points = (-20 * this.wrongPlacedFlags) + (this.correctPlacedFlags * 20);
-    }
-
-    reachedMissedTurnsLimit() {
-        return (this.missedTurns === Constants.missedTurnsLimit) ? true : false;
-    }
-    
 }

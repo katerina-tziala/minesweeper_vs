@@ -11,14 +11,14 @@ class Board {
     initializeBoard() {
         const boardTiles = [];
         for (let xIndex = 0; xIndex < this.boardDimensions.x; xIndex++) {
-           const boardRow = document.createElement("div");
-           boardRow.classList.add(Constants.classList.centeredFlexbox, Constants.boardClassList.boardRow);
+            const boardRow = document.createElement("div");
+            boardRow.classList.add(Constants.classList.centeredFlexbox, Constants.boardClassList.boardRow);
             for (let yIndex = 0; yIndex < this.boardDimensions.y; yIndex++) {
-               const boardTile = new BoardTile(this.generateTileIdNumber(xIndex, yIndex), xIndex, yIndex, this.boardClicked);
-               boardTiles.push(boardTile);
-               boardRow.appendChild(boardTile.getBoardTileElement());
+                const boardTile = new BoardTile(this.generateTileIdNumber(xIndex, yIndex), xIndex, yIndex, this.boardClicked);
+                boardTiles.push(boardTile);
+                boardRow.appendChild(boardTile.getBoardTileElement());
             }
-           this.boardElement.appendChild(boardRow);
+            this.boardElement.appendChild(boardRow);
         }
         this.boardTiles = boardTiles;
         this.setMinesOnBoard();
@@ -96,7 +96,7 @@ class Board {
         }
         return boardTiles;
     }
-    
+
     getBoardAreaToReveal(boardTile) {
         let emptyArea = [];
         this.getEmptyArea([boardTile]).forEach(emptyTile => {

@@ -24,6 +24,7 @@
   border-radius: 8px;
   position: relative;
   text-align: center;
+  color: #00e6e6;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ INVITATION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -35,10 +36,9 @@
 
 .form-header {
   font-size: 16px;
-  border-bottom: 1px solid #737373;
+  border-bottom: 1px solid #00e6e6;
   margin-bottom: 20px;
   padding: 10px;
-  color: #737373;
 }
 
 .radio-container {
@@ -68,11 +68,14 @@
   height: 15px;
   width: 15px;
   background-color: #737373;
+  background-color: #0d0d0d;
+  border: 1px solid #00e6e6;
+
   border-radius: 50%;
 }
 
 .radio-container:hover input ~ .checkmark {
-  background-color: #ccc;
+  background-color: #333333;
 }
 
 .radio-container input:checked ~ .checkmark {
@@ -90,8 +93,8 @@
 }
 
 .radio-container .checkmark:after {
-  top: 4px;
-  left: 4px;
+  top: 3px;
+  left: 3px;
   width: 7px;
   height: 7px;
   border-radius: 50%;

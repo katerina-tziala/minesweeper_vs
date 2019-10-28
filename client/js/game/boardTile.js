@@ -59,7 +59,7 @@ class BoardTile {
     isMineRevealed() {
         return (this.isMine && !this.isFlagged && this.isRevealed) ? true : false;
     }
- 
+
 
     setBoardTileDisplay(playerColor) {
         if (this.isMineRevealed()) {

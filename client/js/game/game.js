@@ -11,7 +11,7 @@ class Game {
         this.allMinesFlagged = false;
         this.setGamePlayers(gameParameters);
         this.initializeGame();
-        this.renderPlayersOnGame();
+        self.uiManager.renderPlayersOnGame(this.getSortedPlayersForDisplay());
         this.displayInitializationMessage();
     }
 
@@ -54,11 +54,10 @@ class Game {
         return this.isOpponent(this.playerOnTurn);
     }
 
-    renderPlayersOnGame() {
+    getSortedPlayersForDisplay() {
         const thisPlayer = this.players.find(player => !this.isOpponent(player));
         const opponent = this.players.find(player => this.isOpponent(player));
-        const playerList = [{ ...thisPlayer }, { ...opponent }];
-        self.uiManager.renderPlayersOnGame(playerList);
+        return [{ ...thisPlayer }, { ...opponent }];
     }
 
     displayInitializationMessage() {
@@ -70,7 +69,7 @@ class Game {
         self.uiManager.displayTurnMessage(message);
         self.popupTimeout = setTimeout(() => {
             self.uiManager.hidePopUp();
-            this.setPlayerTurn(false);
+            this.setPlayerTurn();
         }, 2000);
     }
 
@@ -78,22 +77,20 @@ class Game {
         this.playerOnTurn = this.getPlayerOnTurn();
         this.waitingPlayer = this.getWaitingPlayer();
         this.playerOnTurnDisplay();
-        let message = "It's your turn! Play!";
-        if (this.isPlayerOnTurnOpponent()) {
-            self.uiManager.setGameFreezerOn();
-            message = `${this.playerOnTurn.name} is playing! You should wait!`;
-        } else {
-            self.uiManager.setGameFreezerOff();
-        }
         if (displayTurnMessage) {
+            let message = "It's your turn! Play!";
+            if (this.isPlayerOnTurnOpponent()) {
+                self.uiManager.setGameFreezerOn();
+                message = `${this.playerOnTurn.name} is playing! You should wait!`;
+            } else {
+                self.uiManager.setGameFreezerOff();
+            }
             self.uiManager.displayTurnMessage(message);
             self.popupTimeout = setTimeout(() => {
                 self.uiManager.hidePopUp();
-                //  this.setTurnTimer();
-            }, 1500);
-        } else {
-            //  this.setTurnTimer();
+            }, 2000);
         }
+        this.setTurnTimer();
     }
 
     playerOnTurnDisplay() {
@@ -107,6 +104,8 @@ class Game {
 
     clearTurnTimer() {
         clearInterval(self.playerTurnInterval);
+        self.playerTurnInterval = undefined;
+        self.game.turnSeconds = Constants.playerTurnSeconds;
     }
 
     setTurnTimer() {
@@ -114,7 +113,6 @@ class Game {
         self.game.turnSeconds = Constants.playerTurnSeconds;
         self.playerTurnInterval = setInterval(self.game.turnTimer, 1000);
         self.game.timeCounter.setCounter(self.game.turnSeconds, this.playerOnTurn.playerColor);
-
     }
 
     turnTimer() {
@@ -127,7 +125,7 @@ class Game {
     }
 
     isGameOver() {
-        if (this.playerOnTurn.reachedMissedTurnsLimit() || this.playerOnTurn.revealdMine) {
+        if (this.playerOnTurn.reachedMissedConsecutiveTurnsLimit() || this.playerOnTurn.revealdMine) {
             return true;
         }
         if (this.board.allMinesFlagged()) {
@@ -141,6 +139,7 @@ class Game {
         self.game.clearTurnTimer();
         self.uiManager.setGameFreezerOn();
         this.setPlayerMoveResults(boardTiles);
+        this.setWinner([this.playerOnTurn, this.waitingPlayer]);
         this.switchPlayerMoves();
         const isGameOver = this.isGameOver();
         const gameUpdate = {
@@ -158,32 +157,102 @@ class Game {
             gameId: this.id,
             gameUpdate: gameUpdate
         });
+
     }
 
     setPlayerMoveResults(boardTiles) {
         if (!boardTiles.length) {
-            this.playerOnTurn.updateMissedTurns();
+            this.playerOnTurn.updateMissedConsecutiveTurns();
         } else {
-            this.setPlayerFlagResults(boardTiles[0]);
-            if (boardTiles[0].isMineRevealed()) {
+            this.playerOnTurn.missedConsecutinveTurns = 0;
+            if (boardTiles[0].isFlaggedCorrectly()) {
+                this.playerOnTurn.updateMinesFound();
+                this.mineCounter.counterNumber = this.mineCounter.counterNumber - 1;
+            } else if (boardTiles[0].isMineRevealed()) {
                 this.playerOnTurn.revealdMine = true;
             }
         }
     }
 
-    setPlayerFlagResults(boardTile) {
-        if (boardTile.isFlaggedCorrectly()) {
-            this.playerOnTurn.updateCorrectPlacedFlags();
+    setWinner(players) {
+        if (players[1].minesFound === players[0].minesFound) {
+            players[1].isWinner = false;
+            players[0].isWinner = false;
         }
-        if (boardTile.isFlaggedWrongly()) {
-            this.playerOnTurn.updateWrongPlacedFlags();
+        else if (players[1].minesFound > players[0].minesFound) {
+            players[1].isWinner = true;
+            players[0]["isWinner"] = false;
+        } else {
+            players[0]["isWinner"] = true;
+            players[1]["isWinner"] = false;
         }
-        this.playerOnTurn.calculatePoints();
+        if (players[0].revealdMine) {
+            players[0].isWinner = false;
+            players[1].isWinner = true;
+        }
+        if (players[1].revealdMine) {
+            players[1].isWinner = false;
+            players[0].isWinner = true;
+        }
+        if (players[0].reachedMissedConsecutiveTurnsLimit()) {
+            players[0].isWinner = false;
+            players[1].isWinner = true;
+        }
+        if (players[1].reachedMissedConsecutiveTurnsLimit()) {
+            players[1].isWinner = false;
+            players[0].isWinner = true;
+        }
     }
 
     switchPlayerMoves() {
         this.playerOnTurn.turn = false;
         this.waitingPlayer.turn = true;
+    }
+
+
+    updatePLayers(players) {
+        this.players = [];
+        players.forEach(player => {
+            const newPlayer = new Player(player.id, player.name);
+            if (this.isOpponent(player)) {
+                newPlayer.setPLayerColor(Constants.playerColors.opponent);
+            }
+            newPlayer.points = player.points;
+            newPlayer.correctPlacedFlags = player.correctPlacedFlags
+            newPlayer.wrongPlacedFlags = player.wrongPlacedFlags
+            newPlayer.missedTurns = player.missedTurns
+            newPlayer.turn = player.turn
+            newPlayer.leftGame = player.leftGame
+            newPlayer.isWinner = player.isWinner
+            newPlayer.revealdMine = player.revealdMine
+            this.players.push(newPlayer);
+        });
+    }
+
+    updateGame(gameUpdate) {
+        this.updatePLayers(gameUpdate.players);
+        const lastPLayedPlayer = this.getWaitingPlayer();
+        this.mineCounter.counterNumber = gameUpdate.mineCounter;
+        this.allMinesFlagged = gameUpdate.allMinesFlagged;
+        this.updateBoardView(this.getTilesToUpdate(gameUpdate.tilesToUpdate), lastPLayedPlayer.playerColor);
+        if (gameUpdate.isGameOver) {
+            self.uiManager.setGameFreezerOn();
+            self.uiManager.displayGameResults(this.getSortedPlayersForDisplay());
+        } else {
+            this.setPlayerTurn();
+        }
+    }
+
+    getTilesToUpdate(updatedBoardTiles) {
+        const updatedTiles = [];
+        updatedBoardTiles.forEach(tile => {
+            const tileToUpdate = this.board.getBoardTileBasedOnId(tile.id);
+            tileToUpdate.isFlagged = tile.isFlagged;
+            tileToUpdate.isMine = tile.isMine;
+            tileToUpdate.isRevealed = tile.isRevealed;
+            updatedTiles.push(tileToUpdate);
+        });
+        return updatedTiles;
     }
 
     updateBoardView(boardTiles, playerColor) {

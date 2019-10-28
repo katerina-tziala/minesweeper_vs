@@ -44,8 +44,6 @@ class InterfaceManager {
         this.displayElement(this.domElements.lobby);
         this.hideElement(this.domElements.gameContainer);
         this.hideElement(this.domElements.game);
-  
-console.log(this.domElements.lobby);
     }
 
     setAppViewAndBanner() {
@@ -347,5 +345,53 @@ console.log(this.domElements.lobby);
 
     setFlagOnPlayColor(color) {
         this.domElements.gameFlagOnPlay.style.color = color;
+    }
+
+    displayGameResults(players) {
+        this.displayPopUp();
+        const resultsHeader = document.createElement("h2");
+        resultsHeader.classList.add(Constants.popupClassList.invitationHeader);
+        resultsHeader.innerHTML = `game over`;
+        let message = "It's a draw!";
+        const winner = players.find(player => player.isWinner);
+        if (winner) {
+            message = `Player ${winner.name} wins!`
+        }
+        const resultsMessage = document.createElement("p");
+        resultsMessage.innerHTML = message;
+        const resultsKeys = Object.keys(Constants.resultsHeaders);
+        const table = document.createElement("table");
+        table.classList.add(Constants.popupClassList.resultsTable);
+        resultsKeys.forEach(key => {
+            table.append(this.getResultsTableRow(players, key));
+        });
+
+        const doneBtn = this.createButton(this.closeGameResults)
+        doneBtn.classList.add(Constants.classList.buttonText);
+        doneBtn.innerHTML = "done";
+        this.domElements.popUpMessageContainer.append(resultsHeader, resultsMessage, table, doneBtn);
+    }
+
+    getResultsTableRow(players, key) {
+        const row = document.createElement("tr");
+        const header = document.createElement("th");
+        header.innerHTML = Constants.resultsHeaders[key];
+        row.append(header);
+        players.forEach(player => {
+            row.append(this.getResultsTableCell(player[key].toString()));
+        });
+        return row;
+    }
+
+    getResultsTableCell(data) {
+        const tableCell = document.createElement("td");
+        tableCell.innerHTML = data;
+        return tableCell;
+    }
+
+    closeGameResults() {
+        self.uiManager.hidePopUp();
+        console.log("closeGameResults");
+        console.log("return players to lobby");
     }
 }

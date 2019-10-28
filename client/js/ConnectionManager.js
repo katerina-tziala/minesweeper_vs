@@ -101,9 +101,7 @@ class ConectionManager {
     }
 
     updateGame(data) {
-  
-        console.log(data);
-     
+        self.game.updateGame(data.gameUpdate);
     }
 
 

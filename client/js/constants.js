@@ -31,13 +31,20 @@ class Constants {
         expert: {
             "dimensions": { x: 16, y: 30 },
             "numberOfMines": 99
-        },  
+        } 
     };
 
-    static playerTurnSeconds = 5;
+    static playerTurnSeconds = 32;
     
-    static missedTurnsLimit = 5;
+    static missedConsecutinveTurnsLimit = 5;
     
+    static resultsHeaders = {
+        name: "player",
+        minesFound: "mines found",
+        missedConsecutinveTurns: "missed consecutive turns",
+        revealdMine: "opened mine"
+    };
+
     static playerColors = {
         thisPlayer: "#00e6e6",
         opponent: "#ff33cc"
@@ -99,7 +106,8 @@ class Constants {
         cancelInvitationBtn: "cancel-invitation-btn",
         receivedInvitationBtn: "received-invitation-btn",
         waitingMesage: "waiting-message",
-        blinkDot: "blink-dot"
+        blinkDot: "blink-dot",
+        resultsTable: "minesweeper_vs__results-table"
     };
    
     static playerClassList = {
@@ -108,7 +116,7 @@ class Constants {
         playerIcon: "player-icon",
         playerName: "player-name",
         playerFlag: "player-flag",
-        selfModifier: "--self",
+        selfModifier: "--self"
     };
 
     static boardClassList = {
@@ -127,7 +135,7 @@ class Constants {
         ninja: "fas fa-user-ninja",
         timesX: "fas fa-times",
         timesCircle: "far fa-times-circle",
-        bomb: "fas fa-bomb",
+        bomb: "fas fa-bomb"
     };
 
     static digitClassList = {

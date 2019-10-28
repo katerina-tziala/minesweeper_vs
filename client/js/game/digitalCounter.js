@@ -1,5 +1,5 @@
 class DigitalCounter {
-    constructor(containerID) { 
+    constructor(containerID) {
         this.digitalCounterElement = document.getElementById(containerID);
         this.createDigitalCounterHTML();
         this.counterNumber = null;
@@ -17,7 +17,7 @@ class DigitalCounter {
         digit.classList.add(Constants.digitClassList.digit);
         for (let index = 1; index < 8; index++) {
             const elementClassList = [Constants.digitClassList.digitLine];
-            (index === 1 || index === 4 || index===7) ? elementClassList.push(Constants.digitClassList.digitLineIdentifier + "horizontal") : elementClassList.push(Constants.digitClassList.digitLineIdentifier + "vertical");
+            (index === 1 || index === 4 || index === 7) ? elementClassList.push(Constants.digitClassList.digitLineIdentifier + "horizontal") : elementClassList.push(Constants.digitClassList.digitLineIdentifier + "vertical");
             elementClassList.push(Constants.digitClassList.digitLineIdentifier + index.toString());
             digit.append(this.createDigitLineHTML(elementClassList));
         }
@@ -60,10 +60,9 @@ class DigitalCounter {
     initializeCounterDisplay() {
         const digitElements = this.digitalCounterElement.querySelectorAll(`.${Constants.digitClassList.digit}`);
         for (let index = 0; index < digitElements.length; index++) {
-            this.displayDigit(digitElements[index],  []);
+            this.displayDigit(digitElements[index], []);
         }
     }
-
 
     displayDigit(digitElement, linePositions, color = null) {
         const digitLines = digitElement.querySelectorAll(`.${Constants.digitClassList.digitLine}`);
@@ -73,7 +72,7 @@ class DigitalCounter {
             digitLines[index].style.boxShadow = null;
             if (linePositions && linePositions.includes(index)) {
                 digitLines[index].classList.add(Constants.digitClassList.digitLineOn);
-                if(color){
+                if (color) {
                     digitLines[index].style.borderColor = color;
                     digitLines[index].style.boxShadow = `0px 0px 4px ${color}`;
                 }
