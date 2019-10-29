@@ -1,3 +1,4 @@
+"use strict";
 class Client {
     constructor(conn, id) {
         this.conn = conn;
@@ -29,5 +30,4 @@ class Client {
         this.session = session;
     }
 }
-
 module.exports = Client;

@@ -24,16 +24,17 @@
   border-radius: 8px;
   position: relative;
   text-align: center;
+  color: #b3b3b3;
+}
+
+.popup-message-header {
+  text-transform: uppercase;
+  font-size: 20px;
+  padding-bottom: 10px;
   color: #00e6e6;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ INVITATION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-.invitation-header {
-  text-transform: uppercase;
-  font-size: 20px;
-  padding-bottom: 10px;
-}
-
 .form-header {
   font-size: 16px;
   border-bottom: 1px solid #00e6e6;
@@ -67,10 +68,8 @@
   left: 0;
   height: 15px;
   width: 15px;
-  background-color: #737373;
   background-color: #0d0d0d;
   border: 1px solid #00e6e6;
-
   border-radius: 50%;
 }
 
@@ -121,9 +120,13 @@
   margin-right: 20px;
 }
 
+.minesweeper_vs__ok-button {
+  margin-top: 20px;
+}
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ WAITING MESSAGE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 .waiting-message {
   display: inline;
+  color: #00e6e6;
 }
 
 .blink-dot {
@@ -134,6 +137,7 @@
   animation-duration: 1.4s;
   animation-iteration-count: infinite;
   animation-fill-mode: both;
+  color: #00e6e6;
 }
 
 @keyframes blink {
@@ -154,4 +158,44 @@
 
 .blink-dot:nth-of-type(4) {
   animation-delay: 0.4s;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS TABLE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+.minesweeper_vs__results-header {
+  text-transform: uppercase;
+  font-size: 20px;
+  padding-bottom: 10px;
+}
+.minesweeper_vs__results-table {
+  border-collapse: collapse;
+  margin: 30px 0 10px;
+}
+
+.minesweeper_vs__results-table > tr > th, td {
+  border: 1px solid #333333;
+  text-align: center;
+  padding: 10px;
+}
+
+.minesweeper_vs__results-table > tr > th {
+  text-transform: capitalize;
+  color: #00e6e6;
+}
+
+.minesweeper_vs__results-table tr:first-child > th,
+.minesweeper_vs__results-table tr:first-child > td {
+  border-top: none;
+}
+
+.minesweeper_vs__results-table tr > th {
+  border-left: none;
+}
+
+.minesweeper_vs__results-table tr:last-child > th,
+.minesweeper_vs__results-table tr:last-child > td {
+  border-bottom: none;
+}
+
+.minesweeper_vs__results-table tr > td:last-of-type {
+  border-right: none;
 }

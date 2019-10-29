@@ -39,6 +39,7 @@ class InterfaceManager {
     }
 
     setLobbyView() {
+        this.getViewElements();
         this.setAppViewAndBanner();
         this.hideElement(this.domElements.userForm);
         this.displayElement(this.domElements.lobby);
@@ -83,7 +84,7 @@ class InterfaceManager {
         }
         userCard.append(userIcon, userName);
         if (!isThisPlayer) {
-            const inviteBtn = this.createButton(this.invitePlayer)
+            const inviteBtn = this.createButton(this.invitePlayer);
             inviteBtn.classList.add(Constants.classList.buttonText);
             inviteBtn.innerHTML = "invite";
             inviteBtn.setAttribute("id", client.id);
@@ -133,7 +134,7 @@ class InterfaceManager {
 
     createInvitation() {
         const invitationHeader = document.createElement("h2");
-        invitationHeader.classList.add(Constants.popupClassList.invitationHeader);
+        invitationHeader.classList.add(Constants.popupClassList.popupHeader);
         invitationHeader.innerHTML = `invite player`;
         const form = document.createElement("form");
         const formHeader = document.createElement("p");
@@ -200,6 +201,9 @@ class InterfaceManager {
 
     displayReceivedInvitation(initiator, gameLevel) {
         this.displayPopUp();
+        const invitationHeader = document.createElement("h2");
+        invitationHeader.classList.add(Constants.popupClassList.popupHeader);
+        invitationHeader.innerHTML = "You got an invitation!";
         const message = document.createElement("p");
         message.innerHTML = `<b><i>"${initiator}"</i></b> invited you for a minesweeper game (${gameLevel} level)`;
         const acceptBtn = this.createButton(this.acceptInvitation);
@@ -208,7 +212,7 @@ class InterfaceManager {
         const declineBtn = this.createButton(this.declineInvitation);
         declineBtn.classList.add(Constants.classList.buttonText, Constants.popupClassList.receivedInvitationBtn);
         declineBtn.innerHTML = "decline";
-        this.domElements.popUpMessageContainer.append(message, acceptBtn, declineBtn);
+        this.domElements.popUpMessageContainer.append(invitationHeader, message, acceptBtn, declineBtn);
     }
 
     displayDeclinedInvitationMessage(declinedPlayerName) {
@@ -221,64 +225,8 @@ class InterfaceManager {
         this.domElements.popUpMessageContainer.append(message, okBtn);
     }
 
-    invitePlayer() {
-        self.playerToInviteID = this.getAttribute("id")
-        self.uiManager.showInvitationForm();
-    }
-
-    sendInvitation() {
-        const gameLevel = document.querySelector("input[name='game_level']:checked").value;
-        const boardParameters = Constants.gameParameters[gameLevel];
-        const mineList = self.uiManager.getMineList(boardParameters);
-        const gameParameters = {
-            gameLevel: gameLevel,
-            boardParameters: boardParameters,
-            mineList: mineList
-        };
-        self.uiManager.displayWaitingMessage();
-        self.connectionManager.send({
-            requestType: Constants.requestTypes.sendInvitation,
-            clientId: self.connectionManager.client.id,
-            opponentId: self.playerToInviteID,
-            game: gameParameters,
-            sessionId: self.connectionManager.client.sessionId,
-        });
-        self.playerToInviteID = null;
-    }
-
-    cancelInvitation() {
-        self.uiManager.hidePopUp();
-        self.playerToInviteID = null;
-    }
-
-    acceptInvitation() {
-        const invitation = self.connectionManager.receivedInvitation;
-        self.connectionManager.send({
-            requestType: Constants.requestTypes.acceptedInvitation,
-            gameId: invitation.gameSessionId,
-            initiatorId: invitation.initiator.id,
-            playerToJoin: invitation.clientId,
-            sessionToLeaveId: self.connectionManager.client.sessionId
-        });
-        self.uiManager.hidePopUp();
-    }
-
-    declineInvitation() {
-        const invitation = self.connectionManager.receivedInvitation;
-        self.connectionManager.send({
-            requestType: Constants.requestTypes.declinedInvitation,
-            gameSessionId: invitation.gameSessionId,
-            initiator: invitation.initiator,
-            clientId: self.connectionManager.client.id
-        });
-        self.uiManager.hidePopUp();
-    }
-
-    backToLobby() {
-        self.uiManager.hidePopUp();
-    }
-
     initializeGameView() {
+        this.getViewElements();
         this.hidePopUp();
         this.setAppViewAndBanner();
         this.hideElement(this.domElements.lobby);
@@ -347,16 +295,9 @@ class InterfaceManager {
         this.domElements.gameFlagOnPlay.style.color = color;
     }
 
-    displayGameResults(players) {
+    displayGameResults(players, message) {
         this.displayPopUp();
-        const resultsHeader = document.createElement("h2");
-        resultsHeader.classList.add(Constants.popupClassList.invitationHeader);
-        resultsHeader.innerHTML = `game over`;
-        let message = "It's a draw!";
-        const winner = players.find(player => player.isWinner);
-        if (winner) {
-            message = `Player ${winner.name} wins!`
-        }
+        const resultsHeader = this.getResultsHeader();
         const resultsMessage = document.createElement("p");
         resultsMessage.innerHTML = message;
         const resultsKeys = Object.keys(Constants.resultsHeaders);
@@ -365,11 +306,31 @@ class InterfaceManager {
         resultsKeys.forEach(key => {
             table.append(this.getResultsTableRow(players, key));
         });
-
-        const doneBtn = this.createButton(this.closeGameResults)
-        doneBtn.classList.add(Constants.classList.buttonText);
-        doneBtn.innerHTML = "done";
+        const doneBtn = this.getDoneButton();
         this.domElements.popUpMessageContainer.append(resultsHeader, resultsMessage, table, doneBtn);
+    }
+
+    displayTurnGameOverMessage(message) {
+        this.displayPopUp();
+        const resultsHeader = this.getResultsHeader();
+        const resultsMessage = document.createElement("p");
+        resultsMessage.innerHTML = message;
+        const doneBtn = this.getDoneButton();
+        this.domElements.popUpMessageContainer.append(resultsHeader, resultsMessage, doneBtn);
+    }
+
+    getResultsHeader() {
+        const resultsHeader = document.createElement("h2");
+        resultsHeader.classList.add(Constants.popupClassList.popupHeader);
+        resultsHeader.innerHTML = `game over`;
+        return resultsHeader;
+    }
+
+    getDoneButton() {
+        const doneBtn = this.createButton(this.closeGameResults)
+        doneBtn.classList.add(Constants.classList.buttonText, Constants.popupClassList.okButton);
+        doneBtn.innerHTML = "done";
+        return doneBtn;
     }
 
     getResultsTableRow(players, key) {
@@ -378,20 +339,81 @@ class InterfaceManager {
         header.innerHTML = Constants.resultsHeaders[key];
         row.append(header);
         players.forEach(player => {
-            row.append(this.getResultsTableCell(player[key].toString()));
+
+            row.append(this.getResultsTableCell(player[key], key));
         });
         return row;
     }
 
-    getResultsTableCell(data) {
+    getResultsTableCell(data, key) {
         const tableCell = document.createElement("td");
-        tableCell.innerHTML = data;
+        if (key === "isWinner") {
+            const cup = document.createElement("div");
+            cup.className = Constants.fontAwesomeClassList.cup;
+            if (data) {
+                cup.style.color = Constants.playerColors.thisPlayer;
+            }
+            tableCell.append(cup);
+        }
+
+        else {
+            tableCell.innerHTML = data.toString();
+
+        }
+
         return tableCell;
+    }
+
+    displayOpponentLeftMessage(data){
+        this.displayPopUp();
+        const resultsHeader = this.getResultsHeader();
+        const resultsMessage = document.createElement("p");
+        resultsMessage.innerHTML = `${data.playerLeft.name} left the game! You win!`;
+        const doneBtn = this.getDoneButton();
+        this.domElements.popUpMessageContainer.append(resultsHeader, resultsMessage, doneBtn);
+    }
+
+    cancelInvitation() {
+        self.uiManager.hidePopUp();
+        self.playerToInviteID = null;
+    }
+
+    invitePlayer() {
+        self.playerToInviteID = this.getAttribute("id")
+        self.uiManager.showInvitationForm();
+    }
+
+    backToLobby() {
+        self.uiManager.hidePopUp();
+    }
+
+    sendInvitation() {
+        const gameLevel = document.querySelector("input[name='game_level']:checked").value;
+        const boardParameters = Constants.gameParameters[gameLevel];
+        const mineList = self.uiManager.getMineList(boardParameters);
+        const gameParameters = {
+            gameLevel: gameLevel,
+            boardParameters: boardParameters,
+            mineList: mineList
+        };
+        self.uiManager.displayWaitingMessage();
+        self.connectionManager.sendInvitation(gameParameters, self.playerToInviteID);
+        self.playerToInviteID = null;
+    }
+
+    acceptInvitation() {
+        self.connectionManager.sendInvitationAcceptance();
+        self.uiManager.hidePopUp();
+    }
+
+    declineInvitation() {
+        const invitation = self.connectionManager.receivedInvitation;
+        self.connectionManager.sendInvitationDeclined();
+        self.uiManager.hidePopUp();
     }
 
     closeGameResults() {
         self.uiManager.hidePopUp();
-        console.log("closeGameResults");
-        console.log("return players to lobby");
+        self.connectionManager.switchToLobbySession();
     }
 }

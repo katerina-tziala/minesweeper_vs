@@ -1,3 +1,4 @@
+"use strict";
 class DigitalCounter {
     constructor(containerID) {
         this.digitalCounterElement = document.getElementById(containerID);

@@ -1,3 +1,4 @@
+"use strict";
 class Client {
     constructor(parameters) {
         this.id = parameters.id;

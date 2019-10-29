@@ -1,5 +1,4 @@
 "use strict";
-
 class Constants {
     static connectionLink = "ws://localhost:9000";
     static defaultSessionId = "minesweeper_vs";
@@ -15,10 +14,9 @@ class Constants {
         startGame: "game-initialization",
         gameUpdate: "game-update",
         backToLobby: "back-to-lobby",
+        opponentLeft: "opponent-left"
     };
-  
     static gameLevels = ["begginer", "intermediate", "expert"];
-    
     static gameParameters = {
         begginer: {
             "dimensions": { x: 9, y: 9 },
@@ -33,23 +31,19 @@ class Constants {
             "numberOfMines": 99
         } 
     };
-
-    static playerTurnSeconds = 32;
-    
+    static playerTurnSeconds = 30;
     static missedConsecutinveTurnsLimit = 5;
-    
     static resultsHeaders = {
         name: "player",
         minesFound: "mines found",
-        missedConsecutinveTurns: "missed consecutive turns",
-        revealdMine: "opened mine"
+        wrongPlacedFlags: "flags placed wrongly",
+        revealdMine: "opened mine",
+        isWinner: "winner"
     };
-
     static playerColors = {
         thisPlayer: "#00e6e6",
         opponent: "#ff33cc"
     };
-
     static digitPositions = {
         "0": [0, 1, 2, 3, 4, 5],
         "1": [1, 2],
@@ -63,7 +57,6 @@ class Constants {
         "9": [0, 1, 2, 5, 6],
         "minus": [6]
     };
-
     static dom_elements_ids = {
         minesweeperVS: "minesweeper_vs",
         banner: "minesweeper_vs__banner-container",
@@ -82,7 +75,6 @@ class Constants {
         gameBoard: "game__board",
         gameFreezer: "game__freezer"  
     };
-
     static classList = {
         hidden: "hidden",
         mainContentDisplay: "content_main-view",
@@ -96,9 +88,8 @@ class Constants {
         buttonText: "minesweeper_vs__text-btn",
         buttonIcon: "minesweeper_vs__icon-btn"
     };
-
     static popupClassList = {
-        invitationHeader: "invitation-header",
+        popupHeader: "popup-message-header",
         formHeader: "form-header",
         radioContainer: "radio-container",
         checkmark: "checkmark",
@@ -107,9 +98,9 @@ class Constants {
         receivedInvitationBtn: "received-invitation-btn",
         waitingMesage: "waiting-message",
         blinkDot: "blink-dot",
-        resultsTable: "minesweeper_vs__results-table"
+        resultsTable: "minesweeper_vs__results-table",
+        okButton: "minesweeper_vs__ok-button"
     };
-   
     static playerClassList = {
         playersList: "players-list",
         playerCard: "player-card",
@@ -118,7 +109,6 @@ class Constants {
         playerFlag: "player-flag",
         selfModifier: "--self"
     };
-
     static boardClassList = {
         boardRow : "board__row",
         boardTile : "board__tile",
@@ -129,15 +119,14 @@ class Constants {
         boardTileFlag : "tile__flag",
         boardTileFlaggedWrongly: "board__tile--wrongly-flagged"
     };
-
     static fontAwesomeClassList = {
         flag: "fab fa-font-awesome-flag",
         ninja: "fas fa-user-ninja",
         timesX: "fas fa-times",
         timesCircle: "far fa-times-circle",
-        bomb: "fas fa-bomb"
+        bomb: "fas fa-bomb",
+        cup: "fas fa-trophy"
     };
-
     static digitClassList = {
         "digit": "digit",
         "digitLine": "digit_line",

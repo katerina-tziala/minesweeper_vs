@@ -1,3 +1,4 @@
+"use strict";
 class Game {
     constructor(id, gameParameters) {
         this.id = id;
@@ -9,10 +10,10 @@ class Game {
         this.waitingPlayer = undefined;
         this.turnSeconds = Constants.playerTurnSeconds;
         this.allMinesFlagged = false;
-        this.setGamePlayers(gameParameters);
+        this.setGamePlayers(gameParameters.players);
         this.initializeGame();
         self.uiManager.renderPlayersOnGame(this.getSortedPlayersForDisplay());
-        this.displayInitializationMessage();
+        this.displayTurnMessage(true);
     }
 
     initializeGame() {
@@ -23,31 +24,26 @@ class Game {
         this.mineCounter.setCounter(this.boardSettings.numberOfMines);
     }
 
-
-    setGamePlayers(gameData) {
+    setGamePlayers(players) {
         this.players = [];
-        gameData.players.forEach(player => {
+        players.forEach(player => {
             const newPlayer = new Player(player.id, player.name);
-            if (this.isOpponent(player)) {
+            newPlayer.setPLayerTurn(player.turn);
+            if (this.isOpponent(newPlayer)) {
                 newPlayer.setPLayerColor(Constants.playerColors.opponent);
             }
-            const hasTurn = (player.id === gameData.playerTurn) ? true : false;
-            newPlayer.setPLayerTurn(hasTurn);
             this.players.push(newPlayer);
         });
+        this.setTurnsForPlayers();
+    }
+
+    setTurnsForPlayers() {
+        this.playerOnTurn = this.players.find(player => player.turn);
+        this.waitingPlayer = this.players.find(player => !player.turn);
     }
 
     isOpponent(player) {
-        // return (player.id !== "VaSkG1JMCJNn") ? true : false;
         return !self.connectionManager.isPLayerThisClient(player) ? true : false;
-    }
-
-    getWaitingPlayer() {
-        return this.players.find(player => !player.turn);
-    }
-
-    getPlayerOnTurn() {
-        return this.players.find(player => player.turn);
     }
 
     isPlayerOnTurnOpponent() {
@@ -60,36 +56,35 @@ class Game {
         return [{ ...thisPlayer }, { ...opponent }];
     }
 
-    displayInitializationMessage() {
-        const playerOnTurn = this.getPlayerOnTurn();
-        let message = `You start! Play!`;
-        if (this.isOpponent(playerOnTurn)) {
-            message = `Player ${playerOnTurn.name} starts! You should wait!`;
+    displayTurnMessage(initialization = false) {
+        let message = "It's your turn! Play!";
+        if (initialization) {
+            message = `You start! Play!`;
+            if (this.isPlayerOnTurnOpponent()) {
+                message = `Player ${this.playerOnTurn.name} starts! You should wait!`;
+            }
+        }
+        if (this.isPlayerOnTurnOpponent()) {
+            message = `${this.playerOnTurn.name} is playing! You should wait!`;
         }
         self.uiManager.displayTurnMessage(message);
         self.popupTimeout = setTimeout(() => {
-            self.uiManager.hidePopUp();
-            this.setPlayerTurn();
-        }, 2000);
+                self.uiManager.hidePopUp();
+                this.setPlayerTurn();
+            }, 2000);
     }
 
-    setPlayerTurn(displayTurnMessage = true) {
-        this.playerOnTurn = this.getPlayerOnTurn();
-        this.waitingPlayer = this.getWaitingPlayer();
-        this.playerOnTurnDisplay();
-        if (displayTurnMessage) {
-            let message = "It's your turn! Play!";
-            if (this.isPlayerOnTurnOpponent()) {
-                self.uiManager.setGameFreezerOn();
-                message = `${this.playerOnTurn.name} is playing! You should wait!`;
-            } else {
-                self.uiManager.setGameFreezerOff();
-            }
-            self.uiManager.displayTurnMessage(message);
-            self.popupTimeout = setTimeout(() => {
-                self.uiManager.hidePopUp();
-            }, 2000);
+    setGameFreezer() {
+        if (this.isPlayerOnTurnOpponent()) {
+            self.uiManager.setGameFreezerOn();
+            return;
         }
+        self.uiManager.setGameFreezerOff();
+    }
+
+    setPlayerTurn() {
+        this.playerOnTurnDisplay();
+        this.setGameFreezer();
         this.setTurnTimer();
     }
 
@@ -105,14 +100,14 @@ class Game {
     clearTurnTimer() {
         clearInterval(self.playerTurnInterval);
         self.playerTurnInterval = undefined;
-        self.game.turnSeconds = Constants.playerTurnSeconds;
+        this.turnSeconds = Constants.playerTurnSeconds;
     }
 
     setTurnTimer() {
-        self.game.clearTurnTimer();
-        self.game.turnSeconds = Constants.playerTurnSeconds;
-        self.playerTurnInterval = setInterval(self.game.turnTimer, 1000);
-        self.game.timeCounter.setCounter(self.game.turnSeconds, this.playerOnTurn.playerColor);
+        this.clearTurnTimer();
+        this.turnSeconds = Constants.playerTurnSeconds;
+        self.playerTurnInterval = setInterval(this.turnTimer, 1000);
+        this.timeCounter.setCounter(this.turnSeconds, this.playerOnTurn.playerColor);
     }
 
     turnTimer() {
@@ -152,12 +147,7 @@ class Game {
             tilesToUpdate: boardTiles,
             mineCounter: this.mineCounter.counterNumber
         };
-        self.connectionManager.send({
-            requestType: Constants.requestTypes.gameUpdate,
-            gameId: this.id,
-            gameUpdate: gameUpdate
-        });
-
+        self.connectionManager.sendGameUpdate(this.id, gameUpdate);
     }
 
     setPlayerMoveResults(boardTiles) {
@@ -173,7 +163,7 @@ class Game {
             }
         }
     }
-
+    
     setWinner(players) {
         if (players[1].minesFound === players[0].minesFound) {
             players[1].isWinner = false;
@@ -209,7 +199,6 @@ class Game {
         this.waitingPlayer.turn = true;
     }
 
-
     updatePLayers(players) {
         this.players = [];
         players.forEach(player => {
@@ -217,30 +206,57 @@ class Game {
             if (this.isOpponent(player)) {
                 newPlayer.setPLayerColor(Constants.playerColors.opponent);
             }
-            newPlayer.points = player.points;
-            newPlayer.correctPlacedFlags = player.correctPlacedFlags
-            newPlayer.wrongPlacedFlags = player.wrongPlacedFlags
-            newPlayer.missedTurns = player.missedTurns
-            newPlayer.turn = player.turn
-            newPlayer.leftGame = player.leftGame
-            newPlayer.isWinner = player.isWinner
-            newPlayer.revealdMine = player.revealdMine
+            newPlayer.minesFound = player.minesFound;
+            newPlayer.missedConsecutinveTurns = player.missedConsecutinveTurns;
+            newPlayer.wrongPlacedFlags = player.wrongPlacedFlags;
+            newPlayer.missedTurns = player.missedTurns;
+            newPlayer.turn = player.turn;
+            newPlayer.leftGame = player.leftGame;
+            newPlayer.isWinner = player.isWinner;
+            newPlayer.revealdMine = player.revealdMine;
             this.players.push(newPlayer);
         });
+        this.setTurnsForPlayers();
     }
-
+ 
     updateGame(gameUpdate) {
         this.updatePLayers(gameUpdate.players);
-        const lastPLayedPlayer = this.getWaitingPlayer();
         this.mineCounter.counterNumber = gameUpdate.mineCounter;
         this.allMinesFlagged = gameUpdate.allMinesFlagged;
-        this.updateBoardView(this.getTilesToUpdate(gameUpdate.tilesToUpdate), lastPLayedPlayer.playerColor);
+        this.updateBoardView(this.getTilesToUpdate(gameUpdate.tilesToUpdate), this.waitingPlayer.playerColor);
+        this.playerOnTurnDisplay();
+        this.setGameFreezer();
         if (gameUpdate.isGameOver) {
-            self.uiManager.setGameFreezerOn();
-            self.uiManager.displayGameResults(this.getSortedPlayersForDisplay());
-        } else {
-            this.setPlayerTurn();
+            if (this.players.some(player => player.reachedMissedConsecutiveTurnsLimit())) {
+                this.displayGameEndMessage();
+                return;
+            }
+            this.displayGameResults();
+            return;
         }
+        this.displayTurnMessage();
+    }
+
+    displayGameResults() {
+        let message = "It's a draw!";
+        const winner = this.players.find(player => player.isWinner);
+        if (winner) {
+            if (this.isOpponent(winner)) {
+                message = `Player ${winner.name} wins!`
+            } else if (!this.isOpponent(winner)) {
+                message = "You win!";
+            }
+        }
+        self.uiManager.displayGameResults(this.getSortedPlayersForDisplay(), message);
+    }
+
+    displayGameEndMessage() {
+        const missedTurnsPLayer = this.players.find(player => player.reachedMissedConsecutiveTurnsLimit());
+        let message = "You missed your turn for 5 consecutive times! You loose!";
+        if (!this.isOpponent(missedTurnsPLayer)) {
+            message = `${missedTurnsPLayer.name} missed his/her turn for 5 consecutive times! You win!`;
+        }
+        self.uiManager.displayTurnGameOverMessage(message);
     }
 
     getTilesToUpdate(updatedBoardTiles) {

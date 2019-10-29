@@ -1,3 +1,4 @@
+"use strict";
 class Session {
     constructor(id) {
         this.id = id;
@@ -28,5 +29,4 @@ class Session {
         return this.gameParams;
     }
 }
-
 module.exports = Session;

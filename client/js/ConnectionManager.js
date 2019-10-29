@@ -1,3 +1,4 @@
+"use strict";
 class ConectionManager {
     constructor() {
         this.conn = null;
@@ -23,7 +24,6 @@ class ConectionManager {
         this.conn.send(dataToSend);
     }
 
-
     receiveHandler(msg) {
         const data = JSON.parse(msg);
         switch (data.requestType) {
@@ -45,10 +45,18 @@ class ConectionManager {
             case Constants.requestTypes.gameUpdate:
                 this.updateGame(data);
                 break;
+            case Constants.requestTypes.opponentLeft:
+                self.game.clearTurnTimer();
+                self.uiManager.displayOpponentLeftMessage(data);
+                break;
         }
     }
 
     updateConnection(data) {
+        self.game = undefined;
+        self.playerToInviteID = undefined;
+        self.popupTimeout = undefined;
+        self.playerTurnInterval = undefined;
         this.peers = [];
         const peers = data.peers.filter(peer => peer.id !== data.clientId);
         this.client = new Client(data.peers.find(peer => peer.id === data.clientId));
@@ -104,8 +112,52 @@ class ConectionManager {
         self.game.updateGame(data.gameUpdate);
     }
 
-
     isPLayerThisClient(player) {
         return (player.id !== this.client.id) ? true : false;
+    }
+
+    sendInvitation(gameParameters, playerToInviteID) {
+        this.send({
+            requestType: Constants.requestTypes.sendInvitation,
+            clientId: this.client.id,
+            opponentId: playerToInviteID,
+            game: gameParameters,
+            sessionId: this.client.sessionId,
+        });
+    }
+
+    sendInvitationAcceptance() {
+        this.send({
+            requestType: Constants.requestTypes.acceptedInvitation,
+            gameId: this.receivedInvitation.gameSessionId,
+            initiatorId: this.receivedInvitation.initiator.id,
+            playerToJoin: this.receivedInvitation.clientId,
+            sessionToLeaveId: this.client.sessionId
+        });
+    }
+
+    sendInvitationDeclined() {
+        this.send({
+            requestType: Constants.requestTypes.declinedInvitation,
+            gameSessionId: this.receivedInvitation.gameSessionId,
+            initiator: this.receivedInvitation.initiator,
+            clientId: this.client.id
+        });
+    }
+
+    switchToLobbySession() {
+        this.send({
+            requestType: Constants.requestTypes.backToLobby,
+            gameId: self.game.id,
+            clientId: this.client.id
+        });
+    }
+
+    sendGameUpdate(gameId, gameUpdate) {
+        this.send({
+            requestType: Constants.requestTypes.gameUpdate,
+            gameId: gameId,
+            gameUpdate: gameUpdate
+        });
     }
 }
