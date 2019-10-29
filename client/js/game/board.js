@@ -1,3 +1,4 @@
+"use strict";
 class Board {
     constructor(dimensions, mineList, functionName) {
         this.boardDimensions = dimensions;

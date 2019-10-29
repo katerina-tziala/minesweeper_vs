@@ -1,3 +1,4 @@
+"use strict";
 class BoardTile {
     constructor(id, x, y, functionName) {
         this.id = id;
@@ -59,7 +60,6 @@ class BoardTile {
     isMineRevealed() {
         return (this.isMine && !this.isFlagged && this.isRevealed) ? true : false;
     }
-
 
     setBoardTileDisplay(playerColor) {
         if (this.isMineRevealed()) {
