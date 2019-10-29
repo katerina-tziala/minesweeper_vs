@@ -31,7 +31,7 @@ class Constants {
             "numberOfMines": 99
         } 
     };
-    static playerTurnSeconds = 30;
+    static playerTurnSeconds = 32;
     static missedConsecutinveTurnsLimit = 5;
     static resultsHeaders = {
         name: "player",

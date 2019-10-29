@@ -53,7 +53,10 @@ class ConectionManager {
     }
 
     updateConnection(data) {
-        self.game = undefined;
+        if (self.game) {
+            self.game.clearTurnTimer();
+            self.game = undefined;
+        }
         self.playerToInviteID = undefined;
         self.popupTimeout = undefined;
         self.playerTurnInterval = undefined;
@@ -113,7 +116,7 @@ class ConectionManager {
     }
 
     isPLayerThisClient(player) {
-        return (player.id !== this.client.id) ? true : false;
+        return (player.id === this.client.id) ? true : false;
     }
 
     sendInvitation(gameParameters, playerToInviteID) {

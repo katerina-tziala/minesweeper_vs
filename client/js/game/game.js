@@ -70,8 +70,8 @@ class Game {
         self.uiManager.displayTurnMessage(message);
         self.popupTimeout = setTimeout(() => {
                 self.uiManager.hidePopUp();
-                this.setPlayerTurn();
             }, 2000);
+        this.setPlayerTurn();
     }
 
     setGameFreezer() {
@@ -131,7 +131,7 @@ class Game {
     }
 
     submitMove(boardTiles) {
-        self.game.clearTurnTimer();
+        this.clearTurnTimer();
         self.uiManager.setGameFreezerOn();
         this.setPlayerMoveResults(boardTiles);
         this.setWinner([this.playerOnTurn, this.waitingPlayer]);
@@ -158,6 +158,8 @@ class Game {
             if (boardTiles[0].isFlaggedCorrectly()) {
                 this.playerOnTurn.updateMinesFound();
                 this.mineCounter.counterNumber = this.mineCounter.counterNumber - 1;
+            } else if (boardTiles[0].isFlaggedWrongly()) {
+                this.playerOnTurn.updateWrongPlacedFlags();
             } else if (boardTiles[0].isMineRevealed()) {
                 this.playerOnTurn.revealdMine = true;
             }
@@ -220,6 +222,7 @@ class Game {
     }
  
     updateGame(gameUpdate) {
+        this.clearTurnTimer();
         this.updatePLayers(gameUpdate.players);
         this.mineCounter.counterNumber = gameUpdate.mineCounter;
         this.allMinesFlagged = gameUpdate.allMinesFlagged;
@@ -303,6 +306,9 @@ class Game {
             this.submitMove([clickedTile]);
         } else if (clickedTile.isEmpty()) {
             const areaToReaveal = self.game.board.getBoardAreaToReveal(clickedTile);
+            areaToReaveal.forEach(tile => {
+                tile.setRevealed();
+            });
             this.updateBoardView(areaToReaveal, this.playerOnTurn.playerColor);
             this.submitMove(areaToReaveal);
         } else if (!clickedTile.isEmpty()) {
