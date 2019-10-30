@@ -54,10 +54,16 @@ function getSessionClients(session) {
     return [...session.clients];
 }
 
+
+function joinClientToSession(session, client) {
+    session.joinSession(client);
+    client.setNewSession(session); 
+}
+
+
 function initializeSession(data, client) {
     const session = getSession(data.sessionId) || createSession(data.sessionId);
-    session.joinSession(client);
-    client.setNewSession(session);
+    joinClientToSession(session, client);
     broadcastSession(session);
 }
 
@@ -88,8 +94,7 @@ function sendInvitation(data) {
     leaveSession(currentSession, currClient);
     broadcastSession(currentSession);
     const newSession = createSession();
-    newSession.joinSession(currClient);
-    currClient.setNewSession(newSession);
+    joinClientToSession(newSession, currClient);
     currClient.send({
         requestType: requestTypes.invitationReceivedByUser,
         sessionId: newSession.id
@@ -119,8 +124,7 @@ function invitationDeclined(data) {
     const currClient = clients.find(client => client.id === data.initiator.id);
     leaveSession(currentSession, currClient);
     const newSession = getSession(defaultSessionId);
-    newSession.joinSession(currClient);
-    currClient.setNewSession(newSession);
+    joinClientToSession(newSession, currClient);
     currClient.send({
         requestType: requestTypes.declinedInvitation,
         sessionId: newSession.id,
@@ -136,8 +140,7 @@ function invitationAccepted(data) {
     leaveSession(currentSession, currClient);
     broadcastSession(currentSession);
     const gameSession = getSession(data.gameId);
-    gameSession.joinSession(currClient);
-    currClient.setNewSession(gameSession);
+    joinClientToSession(gameSession, currClient);
     const opponent = getSessionClients(gameSession).find(client => client.id === data.initiatorId);
     const gameData = gameSession.getGameData();
     gameData.players = [currClient.getClientData(), opponent.getClientData()];
@@ -185,8 +188,7 @@ function switchToMainSession(data) {
     const client = getSessionClients(gameSession).find(client => client.id === data.clientId);
     gameSession.leaveSession(client);
     const mainSession = getSession(defaultSessionId) || createSession(defaultSessionId);
-    mainSession.joinSession(client);
-    client.setNewSession(mainSession);
+    joinClientToSession(mainSession, client);
     broadcastSession(mainSession);
 }
 
@@ -224,8 +226,7 @@ function checkPlayersStillInGame(clientLeft) {
             clientsInGame.forEach(clientInGame => {
                 leaveSession(gameSession, clientInGame);
                 const mainSession = getSession(defaultSessionId) || createSession(defaultSessionId);
-                mainSession.joinSession(clientInGame);
-                clientInGame.setNewSession(mainSession);
+                joinClientToSession(mainSession, clientInGame);
                 clientInGame.send({
                     requestType: requestTypes.declinedInvitation,
                     sessionId: mainSession.id,
