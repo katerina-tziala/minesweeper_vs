@@ -16,9 +16,9 @@ class Constants {
         backToLobby: "back-to-lobby",
         opponentLeft: "opponent-left"
     };
-    static gameLevels = ["begginer", "intermediate", "expert"];
+    static gameLevels = ["beginner", "intermediate", "expert"];
     static gameParameters = {
-        begginer: {
+        beginner: {
             "dimensions": { x: 9, y: 9 },
             "numberOfMines": 10
         },
