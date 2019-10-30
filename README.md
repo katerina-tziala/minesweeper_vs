@@ -1,8 +1,10 @@
 <h1><img src="https://github.com/katerina-tziala/minesweeper_vs/blob/master/client/minesweeper_vs_logo.png" alt="budget restaurant reviews logo" width="54" height="54">MinesweeperVS</h1>
 MinesweeperVS is a two-player puzzle browser game, written in JavaScript, HTML5 and CSS3. The players communicate with each other through a custom WebSocket developed in JavaScript upon Node.js.
 
+
 <h2>Objective</h2>
 MinesweeperVS is developed based on the single-player minesweeper computer game. The objective of MinesweeperVS is to find more hidden "mines" (or bombs) in the board than your opponent without detonating any of them, with help from clues about the number of neighboring mines in each field.
+
 
 <h2>Game Flow</h2>
 All potential players are connected to the lobby of the game and can see other users connected. In order to play, a user has to invite another user and select the game level. There are three game levels:
@@ -25,8 +27,10 @@ Players take turns. The player who plays first is selected randomly. On each tur
 - If a player detonates a mine (reveal a field that contains a mine) then the opponent wins.
 
 
+
 <h2>Compatibility</h2>
 Should be good in any latest Chrome and Opera browser when accessed through a laptop or desktop.
+
 
 <h2>Local Setup of the Project</h2>
 
