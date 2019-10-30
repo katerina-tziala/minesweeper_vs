@@ -174,10 +174,10 @@ class Game {
         }
         else if (players[1].minesFound > players[0].minesFound) {
             players[1].isWinner = true;
-            players[0]["isWinner"] = false;
+            players[0].isWinner = false;
         } else {
-            players[0]["isWinner"] = true;
-            players[1]["isWinner"] = false;
+            players[0].isWinner = true;
+            players[1].isWinner = false;
         }
         if (players[0].revealdMine) {
             players[0].isWinner = false;
