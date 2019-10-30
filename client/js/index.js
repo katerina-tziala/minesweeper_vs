@@ -9,7 +9,7 @@ document.addEventListener("contextmenu", event => {
 document.addEventListener("DOMContentLoaded", () => {
     self.uiManager = new InterfaceManager();
     self.uiManager.hideLoader();
-     self.connectionManager = new ConectionManager();
+    self.connectionManager = new ConectionManager();
 });
 
 function getUserName(event) {
