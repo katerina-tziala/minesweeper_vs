@@ -19,6 +19,30 @@ Is the invitation accepted? Game is on!
 Players take turns. The player who plays first is selected randomly. On each turn, the player who plays, has 30 seconds to complete the move. The player has the option to reveal a field (left click) or put a flag on the field (right click). If the player makes no move on the 30 second time window then this player looses his turn and the opponent plays again.
 
 <h3>Win - Loss - Draw</h3>
+
 - The player who finds the more hidden "mines" wins.
 - If a player miss 5 consecutive turns then the opponent wins.
 - If a player detonates a mine (reveal a field that contains a mine) then the opponent wins.
+
+
+<h2>Compatibility</h2>
+Should be good in any latest Chrome and Opera browser when accessed through a laptop or desktop.
+
+<h2>Local Setup of the Project</h2>
+
+**1.** Fork and clone the [**minsesweeper_vs**](https://github.com/katerina-tziala/minesweeper_vs) repository.
+
+**2.** Open the terminal navigate into the /server forlder inside the app and run ***npm install***.
+
+**3.** When all dependencies are installed, run the command ***node server.js*** from the same server folder.
+
+**4.** Navigate from your terminal inside the /app folder and run  ***npm install*** to install the project's dependencies.
+
+**5.** To launch the game install and use the [**Web Server for Chrome**](https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb).
+
+**6.** Choose the /client folder of the project from the *Web Server for Chrome* app.
+
+**7.** Access the game by clicking the provided link of the *Web Server for Chrome* app.
+
+**8.** Enjoy! :video_game: :flags: :collision: :wink:
+
