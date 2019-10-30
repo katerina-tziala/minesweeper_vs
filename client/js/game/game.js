@@ -158,6 +158,7 @@ class Game {
             if (boardTiles[0].isFlaggedCorrectly()) {
                 this.playerOnTurn.updateMinesFound();
                 this.mineCounter.counterNumber = this.mineCounter.counterNumber - 1;
+                this.mineCounter.setCounter(this.mineCounter.counterNumber);
             } else if (boardTiles[0].isFlaggedWrongly()) {
                 this.playerOnTurn.updateWrongPlacedFlags();
             } else if (boardTiles[0].isMineRevealed()) {
@@ -225,6 +226,7 @@ class Game {
         this.clearTurnTimer();
         this.updatePLayers(gameUpdate.players);
         this.mineCounter.counterNumber = gameUpdate.mineCounter;
+        this.mineCounter.setCounter(gameUpdate.mineCounter);
         this.allMinesFlagged = gameUpdate.allMinesFlagged;
         this.updateBoardView(this.getTilesToUpdate(gameUpdate.tilesToUpdate), this.waitingPlayer.playerColor);
         this.playerOnTurnDisplay();
