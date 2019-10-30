@@ -19,6 +19,6 @@ Is the invitation accepted? Game is on!
 Players take turns. The player who plays first is selected randomly. On each turn, the player who plays, has 30 seconds to complete the move. The player has the option to reveal a field (left click) or put a flag on the field (right click). If the player makes no move on the 30 second time window then this player looses his turn and the opponent plays again.
 
 <h3>Win - Loss - Draw</h3>
-The player who finds the more hidden "mines" wins.
-If a player miss 5 consecutive turns then the opponent wins.
-If a player detonates a mine (reveal a field that contains a mine) then the opponent wins.
+- The player who finds the more hidden "mines" wins.
+- If a player miss 5 consecutive turns then the opponent wins.
+- If a player detonates a mine (reveal a field that contains a mine) then the opponent wins.
