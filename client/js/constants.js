@@ -37,7 +37,7 @@ class Constants {
         name: "player",
         minesFound: "mines found",
         wrongPlacedFlags: "flags placed wrongly",
-        revealdMine: "opened mine",
+        revealdMine: "detonated mine",
         isWinner: "winner"
     };
     static playerColors = {
