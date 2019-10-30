@@ -23,6 +23,8 @@ Players take turns. The player who plays first is selected randomly. On each tur
 - The player who finds the more hidden "mines" wins.
 - If a player miss 5 consecutive turns then the opponent wins.
 - If a player detonates a mine (reveal a field that contains a mine) then the opponent wins.
+- If a player detonates a mine (reveal a field that contains a mine) then the opponent wins.
+- When all mines are flagged then the game ends. If both players found the same number of mines then the game ends as a draw. Otherwise, the player that found the more mines wins.
 
 <h2>Compatibility</h2>
 Should be good in any latest Chrome and Opera browser when accessed through a laptop or desktop.
