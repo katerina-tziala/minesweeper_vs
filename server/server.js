@@ -54,12 +54,10 @@ function getSessionClients(session) {
     return [...session.clients];
 }
 
-
 function joinClientToSession(session, client) {
     session.joinSession(client);
     client.setNewSession(session); 
 }
-
 
 function initializeSession(data, client) {
     const session = getSession(data.sessionId) || createSession(data.sessionId);
@@ -205,7 +203,6 @@ function gameSessinClosed(gameSession, client) {
         });
     });
 }
-
 
 function getInvitationsOfClient(id) {
     const invitationsOfClient = [];
