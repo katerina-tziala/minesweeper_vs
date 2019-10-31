@@ -27,10 +27,10 @@ Is the invitation accepted? Game is on!
 
 - In case a player misses 5 consecutive turns then the opponent wins.
 - In case a player detonates a mine (reveal a field that contains a mine) then the opponent wins.
-- When all mines are flagged then the game ends. 
+- When all mines are flagged then the game ends.
 
-- The player who finds the most hidden "mines" wins.
-- In case both players find the same number of mines then the game ends as a draw.
+  - The player who finds the most hidden "mines" wins.
+  - In case both players find the same number of mines then the game ends as a draw.
 
 <h2>Compatibility</h2>
 The game is compatible in any latest Chrome and Opera browser when accessed through a laptop or desktop.
