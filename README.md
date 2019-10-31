@@ -1,4 +1,4 @@
-<h1><img src="https://github.com/katerina-tziala/minesweeper_vs/blob/master/client/minesweeper_vs_logo.png" alt="budget restaurant reviews logo" width="54" height="54">MinesweeperVS</h1>
+<h1><img src="https://github.com/katerina-tziala/minesweeper_vs/blob/master/client/minesweeper_vs_logo.png" alt="MinesweeperVS logo" width="54" height="54">MinesweeperVS</h1>
 MinesweeperVS is a two-player puzzle browser game, written in JavaScript, HTML5 and CSS3. The players communicate with each other through a custom WebSocket developed in JavaScript upon Node.js.
 
 <h2>Objective</h2>
