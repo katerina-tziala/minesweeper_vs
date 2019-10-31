@@ -295,9 +295,15 @@ class InterfaceManager {
         this.domElements.gameFlagOnPlay.style.color = color;
     }
 
-    displayGameResults(players, message) {
+    displayGameResults(players, message, allMinesFlagged) {
         this.displayPopUp();
         const resultsHeader = this.getResultsHeader();
+        this.domElements.popUpMessageContainer.append(resultsHeader);
+        if (allMinesFlagged) {
+            const allMinesFlaggedMessage = document.createElement("p");
+            allMinesFlaggedMessage.innerHTML = "All mines were found!";
+            this.domElements.popUpMessageContainer.append(allMinesFlaggedMessage);
+        }
         const resultsMessage = document.createElement("p");
         resultsMessage.innerHTML = message;
         const resultsKeys = Object.keys(Constants.resultsHeaders);
@@ -307,7 +313,7 @@ class InterfaceManager {
             table.append(this.getResultsTableRow(players, key));
         });
         const doneBtn = this.getDoneButton();
-        this.domElements.popUpMessageContainer.append(resultsHeader, resultsMessage, table, doneBtn);
+        this.domElements.popUpMessageContainer.append(resultsMessage, table, doneBtn);
     }
 
     displayTurnGameOverMessage(message) {

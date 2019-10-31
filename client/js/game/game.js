@@ -5,15 +5,18 @@ class Game {
         this.players = [];
         this.boardSettings = gameParameters.boardParameters;
         this.gameLevel = gameParameters.gameLevel;
-        this.mineList = gameParameters.mineList;
+        this.mineList = gameParameters.mineList.sort();
         this.playerOnTurn = undefined;
         this.waitingPlayer = undefined;
         this.turnSeconds = Constants.playerTurnSeconds;
         this.allMinesFlagged = false;
+        this.gameIsOver = false;
         this.setGamePlayers(gameParameters.players);
         this.initializeGame();
         self.uiManager.renderPlayersOnGame(this.getSortedPlayersForDisplay());
         this.displayTurnMessage(true);
+        console.log(this.mineList);
+        
     }
 
     initializeGame() {
@@ -124,7 +127,7 @@ class Game {
             return true;
         }
         if (this.board.allMinesFlagged()) {
-            this.allMinesFlagged.true;
+            this.allMinesFlagged = true;
             return true;
         }
         return false;
@@ -134,14 +137,14 @@ class Game {
         this.clearTurnTimer();
         self.uiManager.setGameFreezerOn();
         this.setPlayerMoveResults(boardTiles);
-        this.setWinner([this.playerOnTurn, this.waitingPlayer]);
+        this.setWinner([this.playerOnTurn, this.waitingPlayer]); 
+        this.gameIsOver = this.isGameOver();
         this.switchPlayerMoves();
-        const isGameOver = this.isGameOver();
         const gameUpdate = {
             boardParameters: this.boardSettings,
             gameLevel: this.gameLevel,
             mineList: this.mineList,
-            isGameOver: isGameOver,
+            isGameOver: this.gameIsOver,
             allMinesFlagged: this.allMinesFlagged,
             players: [this.playerOnTurn, this.waitingPlayer],
             tilesToUpdate: boardTiles,
@@ -228,6 +231,7 @@ class Game {
         this.mineCounter.counterNumber = gameUpdate.mineCounter;
         this.mineCounter.setCounter(gameUpdate.mineCounter);
         this.allMinesFlagged = gameUpdate.allMinesFlagged;
+        this.gameIsOver = gameUpdate.isGameOver;
         this.updateBoardView(this.getTilesToUpdate(gameUpdate.tilesToUpdate), this.waitingPlayer.playerColor);
         this.playerOnTurnDisplay();
         this.setGameFreezer();
@@ -252,7 +256,7 @@ class Game {
                 message = "You win!";
             }
         }
-        self.uiManager.displayGameResults(this.getSortedPlayersForDisplay(), message);
+        self.uiManager.displayGameResults(this.getSortedPlayersForDisplay(), message, this.allMinesFlagged);
     }
 
     displayGameEndMessage() {

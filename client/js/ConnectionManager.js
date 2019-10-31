@@ -46,8 +46,10 @@ class ConectionManager {
                 this.updateGame(data);
                 break;
             case Constants.requestTypes.opponentLeft:
-                self.game.clearTurnTimer();
-                self.uiManager.displayOpponentLeftMessage(data);
+                if (self.game && !(self.game.gameIsOver)) {
+                    self.game.clearTurnTimer();
+                    self.uiManager.displayOpponentLeftMessage(data);
+                }
                 break;
         }
     }
