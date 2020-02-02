@@ -43,7 +43,7 @@ The game is compatible in any latest Chrome and Opera browser when accessed thro
 
 1. Fork and clone the [**minsesweeper_vs**](https://github.com/katerina-tziala/minesweeper_vs) repository.
 
-2. To install the dependencies of the app, navigate from your terminal inside the ***/server*** directory and run:
+2. To install the dependencies of the app, navigate from your terminal inside the ***minesweeper_vs/server*** directory and run:
 
     ```
     npm install
@@ -55,7 +55,7 @@ The game is compatible in any latest Chrome and Opera browser when accessed thro
     npm i
     ```
 
-3. To start the server of the app, navigate from your terminal inside the ***/server*** directory and run:
+3. To start the server of the app, navigate from your terminal inside the ***minesweeper_vs/server*** directory and run:
 
     ```
     node server.js
@@ -63,7 +63,7 @@ The game is compatible in any latest Chrome and Opera browser when accessed thro
 
 4. To launch the game install and use the [**Web Server for Chrome**](https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb).
 
-5. Choose the ***/client*** folder of the project from the ***Web Server for Chrome*** app.
+5. Choose the ***minesweeper_vs/client*** folder of the project from the ***Web Server for Chrome*** app.
 
 6. Access the game by clicking the provided link of the ***Web Server for Chrome*** app.
 
